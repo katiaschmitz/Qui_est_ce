@@ -1,0 +1,441 @@
+/**
+ *
+ *  Cette classe fait partie du logiciel "Qui est ce",adaptation du jeu de société
+ *  en réseau.</p> <p>
+ *
+ *  Un "ThreadJoueur" représente un utilisateur (joueur) utilisant le logiciel
+ *  et permet de gérer les différentes intéractions (requetes) faites par ce derniers.
+ *  auprès du serveur.
+ *
+ *  Il est caractérisé principalement par un thread le représentant. Puis il décrit
+ *  les informations principales concernant le joueur : pseudo, numéro, partie auquelle il participe.
+ *  Il comprend également les éléments qui permettent l'intéraction entre l'utilisateur et
+ *  le serveur : la socket son entrée et sa sortie, le serveur, l'analyseur(pour analyser les requetes).
+ *
+ */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.io.PrintWriter;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import java.util.List;
+import java.util.ListIterator;
+
+
+public class ThreadJoueur implements Runnable
+{
+	/* thread correspondant*/
+	private Thread thread_client;
+	/* informations relatives au joueur*/
+	private String pseudo="";
+	private Partie partie;
+	private boolean automatique;
+	/* acteurs permettant les intéractions joueur-serveur*/
+	private Socket socket_joueur;
+	private BufferedReader in;//entrée socket
+	private PrintWriter out;//sortie socket
+	private Serveur serveur;
+	private AnalyseurServeur analyseur;
+
+
+/*******************************************************/
+/***          CONSTRUCTEUR, GET, SET                 ***/
+/*******************************************************/
+
+	/**
+	 *  Initialise un ThreadJoueur avec la socket et le serveur donnée en argument.
+	 *  Cette méthode peut être utilisée lors de la création du ThreadJoueur (quand
+	 *  un utilisateur se connecte au logiciel).
+	 *
+	 * @param  sock la socket associée
+	 * @param  serv le serveur associée
+	 * @return ThreadJoueur
+	 */
+	public ThreadJoueur(Socket sock,Serveur serv)
+	{
+			//COMPILATION
+			System.out.println("debut méthodeJoueur constructeur: ");
+			try
+			{
+			/*initialisation acteurs intéractions*/
+			this.socket_joueur = sock;
+			this.serveur = serv;
+			out = new PrintWriter(socket_joueur.getOutputStream());
+      			in = new BufferedReader(new InputStreamReader(socket_joueur.getInputStream()));
+			analyseur=new AnalyseurServeur(this);
+			}
+			catch (IOException e){ }
+
+			/*creation et lancement du thread*/
+			thread_client=new Thread(this);
+			thread_client.start();
+	}
+
+	/**
+	 *  Renvoie le pseudo du joueur
+	 *
+	 * @return  pseudo du joueur
+	 */
+	public String getPseudo()
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadJoueur getPseudo: ");
+		return pseudo;
+	}
+
+	/**
+	 *  Renvoie l entree de la socket
+	 *
+	 * @return  entree socket
+	 */
+	public BufferedReader getInput()
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadJoueur getInput: ");
+		return in;
+	}
+
+/*******************************************************/
+/***             FONCTIONS PRINCIPALES               ***/
+/*******************************************************/
+
+	/**
+	 *  Fonction effectuée par le thread. Elle boucle sur l'analyseur pour
+	 *  répondre aux demandes du joueur.
+	 *
+	 */
+	public void run()
+	{
+		/**élément de compilation*/
+		System.out.println(" debut méthode threadJoueur : run()");
+		/************/
+		while(analyseur.getActif())
+		analyseur.principale();
+	}
+
+	/**
+	 *  Cette fonction permet d'envoyer une chaine de caractère au joueur à travers la socket
+	 *
+	 *  @param message texte à envoyer au joueur
+	 */
+	public void envoiMessageJoueur(String message)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadJoueur envoiMessageJoueur: "+ message);
+		out.println(message);
+		out.flush();
+	}
+
+/********************************************************/
+/***        FONCTIONS POUR L ANALYSEUR_SERVEUR       ****/
+/* elles permettent de répondre aux différentes demandes*/
+/********************************************************/
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle demande au serveur si les informations d'inscription sont correctes
+	 *  et envoie un message au Joueur à travers la socket.
+	 *
+	 *  Il envoie une demande de type 1: .
+	 *  Si l'inscription est valide il envoie 1 et initialise l'attribut pseudo, sinon 0.
+	 *
+	 *  @param pseudo pseudo voulu pour l'inscription
+	 *  @param motPasse mot de passe voulu pour l'inscription
+	 */
+	public void inscription(String pseudo,String motPasse)
+	{
+
+		/*****élément de compilation***/
+		System.out.println("debut methode threadjoueur : inscription "+pseudo+" "+motPasse);
+		/*********************/
+		boolean rep_serveur = serveur.inscription(pseudo,motPasse);
+		if(rep_serveur == true)
+		{
+			envoiMessageJoueur("1:1");
+			this.pseudo=pseudo;
+			serveur.raffraichirListeAttente(this.pseudo,1);
+		}
+		else
+			envoiMessageJoueur("1:0");
+	}
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle demande au serveur si les informations de connexion sont correctes
+	 *  et envoie un message au Joueur à travers la socket.
+	 *
+	 *  Il envoie une demande de type 2: .
+	 *  Si la connexion est valide il envoie 1 et initialise l'attribut pseudo, sinon 0.
+	 *
+	 *  @param pseudo pseudo pour connexion
+	 *  @param motPasse mot de passe pour connexion
+	 */
+	public void connexion(String pseudo,String motPasse)
+	{
+		boolean rep_serveur;
+		/****element de compilation***/
+		System.out.println("debut methode threadjoueur : connexion"+pseudo+" "+motPasse);
+		/********************/
+		rep_serveur = serveur.connexion(pseudo,motPasse);
+		if(rep_serveur == true)
+		{
+			envoiMessageJoueur("2:1");
+			this.pseudo=pseudo;
+			serveur.raffraichirListeAttente(this.pseudo,1);
+		}
+		else
+			envoiMessageJoueur("2:0");
+
+	}
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle demande la liste des joueurs en attente au serveur et l'envoie au joueur
+	 *  à travers la socket.
+	 *
+	 *  Il envoie une demande de type 3: avec la liste d'attente.
+	 */
+	public void listeAttente()
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur listeAttente: ");
+		envoiMessageJoueur("3"+ serveur.listeAttente(this.pseudo)+ "ORDINATEUR");
+	}
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle vérifie que le joueur n'a pas déja fait de demandes et que son adversaire
+	 *  n'a pas de demandes en cours auprès du serveur. Si c'est bon elle créée la partie (partie potentielle
+	 *  en attente de validation ) et met à jours l'attribut partie du ThreadJoueur puis envoie une demande.
+	 *
+	 *  Si c'est bon il envoie une demande de type 5: avec le pseudo du joueur (celui qui lui propose la partie).
+	 *  Sinon il envoie des messages d'erreur
+	 *
+	 *  @param pseudo_adv pseudo de l'adversaire
+	 */
+	public void choixAdversaire(String pseudo_adv)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur choixAdversaire: "+ pseudo_adv);
+
+			ThreadJoueur adv = serveur.getThreadJoueur(pseudo_adv);//récupération du ThreadJOueur de l'adversaire
+			if (serveur.existePartie(this.pseudo)==false) //vérification si le joueur n'a pas fait de proposition
+			{
+				if(serveur.existePartie(adv.pseudo)==false)//vérifie si l'adversaire n'a pas de demande en cours
+				{
+					this.partie = serveur.creerPartie(this.pseudo,adv.pseudo);
+					adv.partie = this.partie;
+					serveur.raffraichirListeAttente(this.pseudo,0);	System.out.println("bouh");
+					serveur.raffraichirListeAttente(adv.pseudo,0);	System.out.println("bouh 2");
+					adv.envoiMessageJoueur("5:"+this.pseudo);
+				}
+				else
+					System.out.println("methodeThreadjoueur choixAdvesaire : adversaire a deja une demande");
+			}	
+			else
+				System.out.println("methodeThreadjoueur choixAdversaire : demande deja envoyée");
+		
+	}
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle vérifie que la réponse du joueur.
+	 *  S'il accepte on initialise la partie du joueur (avec celle créer dans la méthode choixAdversaire)
+	 *  puis on envoie un message à l'adversaire pour qu'il lance la partie. Ensuite on envoie les images pour la partie aux deux 	 	 *  joueurs. Sinon on supprime la partie potentielle créée précedement
+	 *
+	 *  Si c'est bon il envoie une demande de type 6:.
+	 *
+	 *  @param reponse reponse du joueur , 1 s'il accepte,0 sinon.
+	 */
+	public void demandeAccept(String reponse)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur demandeAccepte: "+reponse);
+			ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération du Threadjoueur de l'adversaire
+			if(reponse.equals("1"))
+			{
+				adv.envoiMessageJoueur("6:1");// l adversaire doit lancer la partie
+				/*enregistrer numéro image*/
+				serveur.chargerImagePartie(this.partie);
+			}
+			else
+			{
+				adv.envoiMessageJoueur("6:0");// le joueur peut de nouveau choisir quelquun
+				serveur.supprimerPartie(adv.partie);//suppression de la partie potentielle
+				serveur.raffraichirListeAttente(this.pseudo,1);
+				serveur.raffraichirListeAttente(adv.pseudo,1);
+				adv.partie = null;
+				this.partie = null;
+			}
+	}
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle permet de mettre à jours la partie avec le choix du personnage à deviner en faisant appel au serveur.
+	 *
+	 *  @param num_perso numéro du personnage choisit par le joueur(indice dans le tableau de jeu)
+	 */
+	public void choisirPerso(String num_perso)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur choisirPerso: "+ num_perso);
+		int num_image = Integer.parseInt(num_perso);
+		serveur.ajouterChoixPersoPartie(num_image,this.pseudo,this.partie);
+	}
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle permet de mettre à jours le nombre de cases baissées du joueur puis elle envoi ce nombre à l'adversaire
+	 *
+	 *  elle envoie une demande de type 9: avec le nouveau nombre de case baissée à son adversaire.
+	 *
+	 *  @param nb nombre de cases baissees par le joueur.
+	 */
+	public void nbCaseBaissee(String nb)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur nbCaseBaissee: "+nb);
+		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération Threadjoueur de l'adversaire
+		int nouv_nb = serveur.augmenterCaseBaissee(this.partie,this.pseudo,Integer.parseInt(nb));
+		adv.envoiMessageJoueur("9:"+ nouv_nb );
+	}
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle vérifie si la réponse proposee est juste auprès du serveur.
+	 *  Si oui on envoi un message "gagne" au joueur et "perdu" à son adversaire, sinon on passe la main à l'autre joueur
+	 *
+	 *  Si la réponse est juste, elle envoie une demande de type 10: avec 0 pour perdu  1 pour gagné.
+	 *  Sinon elle envoie une demande de type 13: pour passer la main
+	 *
+	 *  @param num_perso numéro du personnage choisit par le joueur(indice dans le tableau de jeu)
+	 */
+
+	public void proposeReponse(String num_perso)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur proposeReponse: "+ num_perso);
+		int num_image = Integer.parseInt(num_perso);
+		boolean rep_serveur;
+		rep_serveur = serveur.verifierReponse(this.partie,this.pseudo,num_image);
+		if(rep_serveur == true)
+		{
+			ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
+			envoiMessageJoueur("10:Gagnée");//gagnee
+			adv.envoiMessageJoueur("10:Perdue");//perdu
+			serveur.majScore(this.pseudo,adv.pseudo);
+			afficherScores();
+			adv.afficherScores();
+			serveur.supprimerPartie(this.partie);
+		}
+		else envoiMessageJoueur("20");
+	}
+
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle permet d'envoyer un message à l'adversaire.
+	 *
+	 * elle envoie une demande de type 11: avec le texte à envoyer.
+	 *
+	 *  @param texte texte à envoyer
+	 */
+	public void envoiTexte(String texte)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur envoiTexte: "+texte);
+		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
+		adv.envoiMessageJoueur("11:"+texte);
+	}
+
+	/**
+	 *  Elle permet d'envoyer une image au joueur à travers la socket
+	 *
+	 *  @param image indice de l image a envoyer
+	 */
+	public void envoiImage(String image)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
+		int num_image = Integer.parseInt(image);
+		int i = serveur.recupererImagePartie(num_image,this.partie)  ;// recuperer le numero de l image a envoyer
+		Byte[] b = new Byte[256];
+		byte[] z = new byte[256];
+		int[] c = new int[256];
+		char[] d = new char[256];
+		int x;
+		FileInputStream fichiers = null;
+		try{fichiers=new FileInputStream("s"+i+".jpg");}
+			catch(FileNotFoundException e){System.out.println("erreur ouverture fichier");}
+
+		try{x=fichiers.read(z);
+		while(x!=-1)
+		{
+			for(int j=0;j<x;j++)
+			{
+				b[j]=z[j];
+				c[j]=b[j].intValue();
+				out.write(c[j]);
+			}
+			x=fichiers.read(z);
+		}
+		x=64000;
+		out.write(x);
+		out.flush();}
+		catch(IOException e){System.out.println("erreur envoi image");}
+	}
+
+	/**
+	 *  Elle recupere les scores puis les renvoi a l utilisateur dont le pseudo est donnée en argument
+	 *
+	 *  @param pseudo pseudo de l utilisateur ayant fait la demande
+	 */
+	public void afficherScores()
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur afficherScores: "+this.pseudo);
+		this.envoiMessageJoueur("14"+ serveur.recupererScores(this.pseudo));
+	}
+
+	/**
+	 *  Elle traite le cas ou le joueur se deconnecte cest a dire elle supprime la partie et previent l autre joueur
+	 *  si une partie etait en cours
+	 *
+	 */
+	public void deconnexion()
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueur deconnexion: "+this.pseudo);
+		serveur.deconnexion(this.pseudo);
+		serveur.raffraichirListeAttente(this.pseudo,0);
+		if(serveur.existePartie(this.pseudo))
+		{
+			ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
+			serveur.supprimerPartie(this.partie);
+			adv.envoiMessageJoueur("16:");// partie interrompue joueur deconnecté
+		}
+		//fermeture socket
+		try{
+		socket_joueur.close();}catch(IOException e){}
+	}
+
+	/**
+	 *  Elle dit au joueur de  raffraichir sa liste d attente en ajoutant ou retirant le joueur dont le pseudo est donnée en 		 *  argument
+	 *
+	 *  @param pseudo pseudo du joueur a ajouter ou retirer
+	 *  @param sens 0 s'il faut le retirer,1 sinon
+	 */
+	public void raffraichirListeAttente(String pseudo, int sens)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadjoueurraffraichirListeAttente: "+pseudo+sens);
+		this.envoiMessageJoueur("17:"+ pseudo +":"+ sens);
+	}
+
+
+}

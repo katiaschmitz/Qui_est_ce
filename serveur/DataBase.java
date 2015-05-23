@@ -1,0 +1,455 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.sql.*;
+
+
+/**
+ * Classe DataBase est un module dans le cadre du jeu du Qui_Est_Ce projet de licence informatique 3ème année
+ *
+ * @author     Mehdi Naima
+ * @version    1.0
+ * @since      May 2015
+ */
+
+public class DataBase
+{
+	private Connection connexion;
+
+
+
+	/**
+	 * Initialise une instance de base de donnee
+	 * @param  connexion pour initialiser la connexion à la base de donnee
+	 */
+	public DataBase()
+	{
+		String driver = "com.mysql.jdbc.Driver";
+		String url = "jdbc:mysql://marseille/BDE11216832";
+    	String user = "E11216832";
+    	String password = "0JYJQM054H1";
+
+
+
+		try
+		{
+			try{Class.forName(driver);}
+			catch(ClassNotFoundException e){System.out.println("probleme driver");}
+			connexion = DriverManager.getConnection(url,user,password);
+		}
+		catch (SQLException ex)
+		{
+			System.out.println("probleme connexion base de donnee");
+			 System.out.println("SQLException: " + ex.getMessage());
+    System.out.println("SQLState: " + ex.getSQLState());
+    System.out.println("VendorError: " + ex.getErrorCode());
+        	}
+		/*verifierExistencePersonnes();*/
+		/*creerTablePersonnes();*/
+
+	}
+
+
+	/**
+	 * verifie si un pseudo et un mot de passe correspondent bien a un utilisateur
+	 * @param  pseudo le pseudo a verifier
+	 * @param  password le mot de passe
+	 * @return  vrai si la personne existe, faux sinon
+	 */
+	public boolean connexion(String pseudo,String password)
+	{
+		System.out.println("DataBase:connexion debut methode ");
+		int reponse;
+		boolean x=false;
+		PreparedStatement req;
+		try
+		{
+			req=connexion.prepareStatement("Select count(*) as n from qui_est_ce where pseudo=? and password=?;");
+			req.setString( 1, pseudo);
+			req.setString( 2, password);
+			ResultSet resultat = req.executeQuery();
+		    resultat.next();
+			reponse=resultat.getInt("n");
+			if(reponse==1)
+			{
+				x=true;
+				try
+				{
+					req=connexion.prepareStatement( "update qui_est_ce set connecte=1 where pseudo=?;");
+					req.setString( 1, pseudo );
+					int res = req.executeUpdate();
+				}
+				catch(SQLException ex){}
+
+			}
+			else
+				x=false;
+
+		}
+		catch(SQLException ex){}
+
+		/*while ( resultat.next() )*/
+
+		System.out.println("DataBase:connexion fin methode "+x);
+
+		return x;
+	}
+
+	/**
+	 * inscrit pseudo et un mot de passe dans la base de donnee
+	 * @param  pseudo le pseudo a verifier
+	 * @param  password le mot de passe
+	 * @return  vrai si la personne a bien ete ajoutee la personne existe, et faux si le pseudo est deja utilise
+	 */
+	public boolean inscription(String pseudo,String password)
+	{
+		System.out.println("DataBase:inscription debut methode ");
+
+		boolean x=false;
+		int reponse;
+		PreparedStatement req=null;
+		try
+		{
+			req=connexion.prepareStatement( "Select count(*) as n from qui_est_ce where pseudo=?");
+			req.setString( 1, pseudo );
+			ResultSet resultat = req.executeQuery();
+		    resultat.next();
+			reponse=resultat.getInt("n");
+			System.out.println("reponse = "+reponse);
+
+			if(reponse==1)
+				x=false;
+			else
+			{
+				PreparedStatement inscrip=null;
+				try
+				{
+					int indice=recupererNombre();
+					inscrip=connexion.prepareStatement("INSERT INTO qui_est_ce VALUES(?,?,0,0,?,1)");
+					inscrip.setString(1,pseudo);
+					inscrip.setString(2,password);
+					inscrip.setInt(3,indice);
+
+					arrangerClassement(pseudo);
+					int res = inscrip.executeUpdate();
+					if(res==1)
+						x=true;
+				}
+				catch(SQLException ex){	ex.printStackTrace();}
+
+
+			}
+
+		}
+		catch(SQLException ex){ex.printStackTrace();}
+		//System.out.println(x);
+		System.out.println("fin inscription");
+
+		System.out.println("DataBase:inscription debut methode "+x);
+
+		return x;
+
+	}
+
+	/**
+	 * renvoie la liste d attente des personnes connectee avec leur nombre de victoires et defaites
+	 * @param  pseudo la personne qui demande la liste, qu on ne renverra pas dans la liste
+	 * @return  une chaine de caracteres avec des ':' entre chaque personnes et des ' ' entre le nom,victoires et defaites de chaque personne
+	 */
+	public String listeJoueur(String pseudo)
+	{
+		System.out.println("DataBase:liste Joueur debut methode ");
+		String reponse="";
+		PreparedStatement req=null;
+		try
+		{
+			req=connexion.prepareStatement( "Select pseudo from qui_est_ce where pseudo<>? and connecte=1;");
+
+
+			req.setString( 1, pseudo );
+			ResultSet resultat = req.executeQuery();
+			while ( resultat.next())
+			{
+				reponse=reponse+":"+resultat.getString("pseudo");
+			}
+
+		}
+		catch(SQLException ex){}
+		System.out.println("fin liste attente");
+		System.out.println("DataBase:liste Joueur fin methode "+reponse);
+
+		return reponse;
+	}
+
+	public void deconnexion(String pseudo)
+	{
+		PreparedStatement req;
+		try
+		{
+			req=connexion.prepareStatement( "UPDATE qui_est_ce set connecte=0 where pseudo=?");
+			req.setString( 1, pseudo );
+			int resultat = req.executeUpdate();
+		}
+		catch(SQLException ex){}
+
+	}
+
+
+
+	public void fermerConnection()
+	{
+		try{connexion.close();}
+		catch(SQLException ex){}
+
+	}
+
+
+	public void majScore(String pseudo,boolean gagne)
+	{
+		PreparedStatement req=null;
+		try
+		{
+			if(gagne)
+			{
+				req=connexion.prepareStatement( "select gagne from qui_est_ce where pseudo=?");
+				req.setString( 1, pseudo );
+				ResultSet resultat = req.executeQuery();
+		    	resultat.next();
+				int nombre=resultat.getInt("gagne");
+				nombre++;
+				req=connexion.prepareStatement( "update qui_est_ce set gagne=? where pseudo=?");
+				req.setInt(1 , nombre );
+				req.setString( 2, pseudo );
+				req.executeUpdate();
+
+
+			}
+
+			else
+			{
+				req=connexion.prepareStatement( "select perdu from qui_est_ce where pseudo=?");
+				req.setString( 1, pseudo );
+				ResultSet resultat = req.executeQuery();
+		    	resultat.next();
+				int nombre=resultat.getInt("perdu");
+				nombre++;
+				req=connexion.prepareStatement( "update qui_est_ce set perdu=? where pseudo=?");
+				req.setInt(1 , nombre );
+				req.setString( 2, pseudo );
+				req.executeUpdate();
+
+
+			}
+			arrangerClassement(pseudo);
+
+		}
+		catch(SQLException ex){}
+
+	}
+
+	public String afficherScore(String pseudo)
+	{
+		PreparedStatement req=null;
+		int i;
+		String reponse = "";
+		int g;
+		int p;
+		String ps="";
+
+		try
+		{
+			for(i=0;i<recupererNombre();i++)
+			{
+			req=connexion.prepareStatement( "select pseudo,gagne,perdu from qui_est_ce where rang = ?");
+			req.setInt( 1, i );
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+			g=resultat.getInt("gagne");
+			p=resultat.getInt("perdu");
+			ps = resultat.getString("pseudo");
+			reponse = reponse + ":" +ps +" "+g+" "+p;
+
+			}
+		}
+		catch(SQLException ex){}
+
+
+		return reponse;
+	}
+
+
+	public void arrangerClassement(String pseudo)
+	{
+		int i=-1;
+		int dif=-1;
+		PreparedStatement req=null;
+		int indice=-1;
+		boolean x=false;
+		try
+		{
+				req=connexion.prepareStatement( "select rang,(gagne-perdu) as dif from qui_est_ce where pseudo=?");
+				req.setString( 1, pseudo );
+				ResultSet resultat = req.executeQuery();
+	    		resultat.next();
+	    		dif=resultat.getInt("dif");
+	    		indice=resultat.getInt("rang");
+	    		System.out.println("difference = "+dif);
+
+		}
+		catch(SQLException ex){}
+		System.out.println("taille"+recupererNombre());
+
+		int taille=recupererNombre();
+		System.out.println("taille * = "+dif);
+
+		int[] tab=new int[taille];
+		remplirTableau(tab,pseudo);
+		for(i=0;i<taille && x==false ;i++)
+		{
+			//System.out.println("tab[ "+i+"]= "+tab[i]);
+
+			if(dif>tab[i])
+			{
+				x=true;
+				setRang(pseudo,indice,i);
+			}
+			else if(dif==tab[i])
+			{
+				x=true;
+				setRang(pseudo,indice,i);
+			}
+		}
+
+	}
+
+
+	public void setRang(String pseudo,int indice,int i)
+	{
+		System.out.println("debut "+indice+" fin "+i);
+
+		if(i!=indice)
+		{
+		PreparedStatement req=null;
+		try
+		{
+				req=connexion.prepareStatement( "update qui_est_ce set rang=? where pseudo=?");
+				req.setInt( 1, i );
+				req.setString( 2, pseudo );
+				req.executeUpdate();
+		}
+		catch(SQLException ex){}
+
+		if(i>indice)
+		 	decalerScore(indice,i,pseudo,0);
+		 else
+		 	decalerScore(indice,i,pseudo,1);
+		}
+
+
+	}
+
+
+	public void decalerScore(int debut,int fin,String pseudo,int x)
+	{
+		System.out.println("x= "+x);
+
+		PreparedStatement req=null;
+		try
+		{
+				if(x==1)
+				{
+				req=connexion.prepareStatement( "update qui_est_ce set rang=rang+1 where rang>=? and rang<? and pseudo<>?");
+				req.setInt( 1, fin );
+				req.setInt( 2, debut );
+				req.setString( 3,pseudo );
+
+				}
+				else
+				{
+				req=connexion.prepareStatement( "update qui_est_ce set rang=rang-1 where rang>? and rang<=? and pseudo<>?");
+
+				req.setInt( 1, debut );
+				req.setInt( 2, fin );
+				req.setString( 3,pseudo );
+
+				}
+				req.executeUpdate();
+		}
+		catch(SQLException ex){}
+
+	}
+
+
+	public void remplirTableau(int[] tab,String pseudo)
+	{
+		PreparedStatement req=null;
+		try
+		{
+				for(int i=0;i<tab.length;i++)
+				{
+				req=connexion.prepareStatement( "select (gagne-perdu) as dif from qui_est_ce where rang=? and pseudo<>?");
+				req.setInt(1,i);
+				req.setString(2, pseudo);
+
+				ResultSet resultat = req.executeQuery();
+				resultat.next();
+				tab[i]=resultat.getInt("dif");
+				}
+		}
+				catch(SQLException ex){}
+
+	}
+
+
+
+	public int recupererNombre()
+	{
+		PreparedStatement req=null;
+		int nombre=-1;
+		try
+		{
+				req=connexion.prepareStatement( "select count(*) as n from qui_est_ce");
+				ResultSet resultat = req.executeQuery();
+				resultat.next();
+	    		nombre=resultat.getInt("n");
+		}
+		catch(SQLException ex){}
+		return nombre;
+
+
+	}
+
+	public void deconncterTous()
+	{
+		PreparedStatement req=null;
+		try
+		{
+				req=connexion.prepareStatement( "update qui_est_ce set connecte=0 where connecte=1");
+				req.executeUpdate();
+		}
+		catch(SQLException ex){		System.out.println("x= aux");}
+
+
+	}
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
