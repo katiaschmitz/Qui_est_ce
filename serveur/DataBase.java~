@@ -29,13 +29,12 @@ public class DataBase
 	 */
 	public DataBase()
 	{
-		 System.out.println("Connecting to a selected database...");
 		String driver = "com.mysql.jdbc.Driver";
 		/*String url = "jdbc:mysql://marseille/BDE11216832";
     		String user = "E11216832";
     		String password = "0JYJQM054H1";*/
 
-			String url = "jdbc:mysql://mysql-thetourist.alwaysdata.net/thetourist_quiestce";
+		String url = "jdbc:mysql:http://mysql-thetourist.alwaysdata.net";
     		String user = "107510_3";
     		String password = "root";
 
@@ -44,13 +43,15 @@ public class DataBase
 			try{Class.forName(driver);}
 			catch(ClassNotFoundException e){System.out.println("probleme driver");}
 			connexion = DriverManager.getConnection(url,user,password);
-			System.out.println("Connected database successfully...");
-			/*PreparedStatement req;
-			String sql = "";
+			Statement stmt = null;
 			sql = "create table qui_est_ce (pseudo varchar(20),password varchar(20),gagne int,perdu int,rang int,connecte int)";
-			req=connexion.prepareStatement(sql);
-			req.executeUpdate(sql);
-	  	    System.out.println("table created...");*/
+			stmt.executeUpdate(sql);
+			PreparedStatement inscrip=null;
+			inscrip=connexion.prepareStatement("INSERT INTO qui_est_ce VALUES(?,?,0,0,?,1)");
+			inscrip.setString(1,"omar");
+			inscrip.setString(2,"fred");
+			inscrip.setInt(3,5);
+			afficherScore("omar");
 
 		}
 		catch (SQLException ex)
