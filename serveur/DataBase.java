@@ -454,20 +454,111 @@ public class DataBase
 
 	public String listeQuestion()
 	{
+		PreparedStatement req=null;
+		int i;
+		String reponse = "";
+		int g;
+		int p;
+		String ps="";
 
+		try
+		{
+			for(i=0;i<recupererNombre();i++)
+			{
+			req=connexion.prepareStatement( "select q from question");
+			ResultSet resultat = req.executeQuery();
+			while ( resultat.next())
+			{
+				reponse=reponse+":"+resultat.getString("q");
+			}
+
+			ps = resultat.getString("q");
+			reponse = reponse + ":" +ps;
+
+			}
+		}
+		catch(SQLException ex){}
+
+
+		return reponse;
 	}
+
 
 	public int getChampReponse( int id_question )
 	{
-		
+		PreparedStatement req=null;
+		int nombre=-1;
+		try
+		{
+			req=connexion.prepareStatement( "select r  from question where id = ?");
+			req.setInt(1,id_question);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+	    		nombre=resultat.getInt("r");
+		}
+		catch(SQLException ex){}
+		return nombre;
+
 	}
 
-	public boolean verifierImage(int id_image, int num_champs)
+	public boolean verifierImage(int id_image, int num_champs,int br)
 	{
+		PreparedStatement req=null;
+		boolean x = false;
+		String ch="champ";
+		int res;
+		try
+		{
+			req=connexion.prepareStatement( "select ? as rep from image where id=?");
+			req.setString(1,ch+num_champs);
+			req.setInt(2,id_image);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+	    		res=resultat.getInt("rep");
+			if(res==br)
+				x=true;
+			else 
+				x=false;
+		
+		}
+		catch(SQLException ex){}
+		return x;
+	}
+
+	public int getNombreQuestion()
+	{
+		
+		PreparedStatement req=null;
+		int nombre=-1;
+		try
+		{
+			req=connexion.prepareStatement( "select count(*) as n from question");
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+	    		nombre=resultat.getInt("n");
+		}
+		catch(SQLException ex){}
+		return nombre;
+
 
 	}	
 
+	public int getBonneReponse( int id_q)
+	{
+		PreparedStatement req=null;
+		int nombre=-1;
+		try
+		{
+			req=connexion.prepareStatement( "select br from question where id=?");
+			req.setInt(1,id_q);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+	    		nombre=resultat.getInt("br");
+		}
+		catch(SQLException ex){}
+		return nombre;
 
+	}
 
 
 }
