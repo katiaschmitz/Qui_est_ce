@@ -396,24 +396,25 @@ public class Serveur
 		}
 	}
 
-}
+
 
 /************rajout**********************/
 
 	public int getNbQuestion(){
-		bdd.nbQuestions();// retourne le nombre de questions
+		return bdd.getNombreQuestion();// retourne le nombre de questions
 	}
 
-	public int recupererReponseQuestion(Partie p , int question)
+	public String recupererReponseQuestion(Partie p , int question)
 	{
 		int[] tmp = p.getTabImages();
 		int nb = 0;
 		String img = "";
 		int num_champs = bdd.getChampReponse(question);
-		//verifier avec les images de la partie les reponse au question
-		for( int i =0; i < tmp.length; ++i)
-		{ 
-			if( bdd.verifierImage( tmp[i], num_champs))
+		int bonne_valeur = bdd.getBonneReponse(question);
+		/*verifier avec les images de la partie les reponse au question*/
+		for( int i =0; i < tmp.length; i++)
+		{
+			if( bdd.verifierImage( tmp[i], num_champs, bonne_valeur))
 			{
 				nb = nb +1;
 				img = img + ":" + i ;
@@ -426,10 +427,10 @@ public class Serveur
 
 	public String listeQuestion()
 	{
-		bdd.listeQuestion();
+		return bdd.listeQuestion();
 	}
 
-
+}
 
 
 

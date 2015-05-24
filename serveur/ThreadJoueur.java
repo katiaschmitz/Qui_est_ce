@@ -439,7 +439,7 @@ public class ThreadJoueur implements Runnable
 	}
 
 
-}
+
 
 /*******************************ajout*****************************/
 
@@ -454,10 +454,10 @@ public class ThreadJoueur implements Runnable
 
 	public void envoiQuestionAuto(String num_question)
 	{
-		ThreadJoueur adv = serveur.getThreadJoueur(pseudo_adv);
+		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération du Threadjoueur de
 
 		String tmp = serveur.recupererReponseQuestion(this.partie,Integer.parseInt(num_question));
-		String[] infos = recu.split(":");
+		String[] infos = tmp.split(":");
 
 		String nb = infos[0];// numero de la demande
 		String img = "";
@@ -476,7 +476,7 @@ public class ThreadJoueur implements Runnable
 		envoiMessageJoueur("33:"+serveur.listeQuestion());
 	}
 
-
+}
 
 
 
