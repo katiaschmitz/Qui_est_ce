@@ -543,17 +543,18 @@ public class DataBase
 
 	}	
 
-	public int getBonneReponse( int id_img,int id_q)
+	public int getBonneReponse( int id_img,int champ)
 	{
 		PreparedStatement req=null;
 		int nombre=-1;
 		try
 		{
-			req=connexion.prepareStatement( "select br from question where id=?");
-			req.setInt(1,id_q);
+			req=connexion.prepareStatement( "select ? as m from image where id=?");
+			req.setString(1,"champ"+champ);
+			req.setInt(2,id_img);
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
-	    		nombre=resultat.getInt("br");
+	    		nombre=resultat.getInt("m");
 		}
 		catch(SQLException ex){}
 		return nombre;
