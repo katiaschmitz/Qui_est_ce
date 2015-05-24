@@ -145,6 +145,21 @@ public class Partie
 		return images[i];
 	}
 
+	public int getChoixAdversaire(String pseudo)
+	{
+		//COMPILATION 
+		System.out.println("debut méthodePartie setChoixJoueur: "+pseudo+" "+ choix);
+		if(pseudo.equals(joueur1))
+			 return choixJoueur2;
+		else
+			return choixJoueur1;
+	}	
+
+	public int[] getTabImages()
+	{
+		return images;
+	}
+
 /*******************************************************/
 /***          FONCTIONS MANIPULATION PARTIES         ***/
 /*******************************************************/

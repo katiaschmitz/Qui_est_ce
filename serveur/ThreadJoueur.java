@@ -454,9 +454,10 @@ public class ThreadJoueur implements Runnable
 
 	public void envoiQuestionAuto(String num_question)
 	{
-		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération du Threadjoueur de
+		
+		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
 
-		String tmp = serveur.recupererReponseQuestion(this.partie,Integer.parseInt(num_question));
+		String tmp = serveur.recupererReponseQuestion(this.partie,this.pseudo,Integer.parseInt(num_question));
 		String[] infos = tmp.split(":");
 
 		String nb = infos[0];// numero de la demande

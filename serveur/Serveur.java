@@ -404,13 +404,18 @@ public class Serveur
 		return bdd.getNombreQuestion();// retourne le nombre de questions
 	}
 
-	public String recupererReponseQuestion(Partie p , int question)
+	public String recupererReponseQuestion(Partie p ,String pseudo, int question)
 	{
 		int[] tmp = p.getTabImages();
+
 		int nb = 0;
 		String img = "";
+
+		int id_image = p.getChoixAdversaire(pseudo);
+
 		int num_champs = bdd.getChampReponse(question);
-		int bonne_valeur = bdd.getBonneReponse(question);
+		int bonne_valeur = bdd.getBonneReponse(tmp[id_image],num_champs);
+
 		/*verifier avec les images de la partie les reponse au question*/
 		for( int i =0; i < tmp.length; i++)
 		{

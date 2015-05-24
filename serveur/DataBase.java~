@@ -473,7 +473,7 @@ public class DataBase
 			}
 
 			ps = resultat.getString("q");
-			reponse = reponse + ":" +ps +" "+g+" "+p;
+			reponse = reponse + ":" +ps;
 
 			}
 		}

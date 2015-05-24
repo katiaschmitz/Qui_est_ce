@@ -543,7 +543,7 @@ public class DataBase
 
 	}	
 
-	public int getBonneReponse( int id_q)
+	public int getBonneReponse( int id_img,int id_q)
 	{
 		PreparedStatement req=null;
 		int nombre=-1;

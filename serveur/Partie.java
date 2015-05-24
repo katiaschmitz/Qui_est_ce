@@ -145,6 +145,15 @@ public class Partie
 		return images[i];
 	}
 
+	public int getChoixAdversaire(String pseudo)
+	{
+		
+		if(pseudo.equals(joueur1))
+			 return choixJoueur2;
+		else
+			return choixJoueur1;
+	}	
+
 	public int[] getTabImages()
 	{
 		return images;

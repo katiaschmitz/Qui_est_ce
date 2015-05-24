@@ -157,7 +157,7 @@ public class AnalyseurServeur
 			{
 				th.envoiQuestionAuto(infos[1]);
 			}
-			else if(demande.equals("32"))
+			else if(demande.equals("33"))
 			{
 				th.envoiQuestion();
 			}
