@@ -76,7 +76,10 @@ public class JoueurAutomatique{
 			{
 				choisirQuestion();
 			}
-			
+			else if(demande.equals("32"))
+			{
+				choisirQuestion();
+			}
 
 
 			/*remise à zero des informations*/

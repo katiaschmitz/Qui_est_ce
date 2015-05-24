@@ -426,7 +426,7 @@ public class Serveur
 
 	public String listeQuestion()
 	{
-		bdd.listeQuestion();
+		// return la liste des questions
 	}
 
 

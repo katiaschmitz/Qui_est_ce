@@ -471,7 +471,7 @@ public class ThreadJoueur implements Runnable
 		adv.envoiMessageJoueur("9:"+ nb);// envoi nb case baissée à l adver
 	}
 
-	public void envoiQuestion()
+	public void envoiQuesrion()
 	{
 		envoiMessageJoueur("33:"+serveur.listeQuestion());
 	}

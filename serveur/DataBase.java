@@ -450,6 +450,22 @@ public class DataBase
 
 	}
 
+/***************************************ajout*********************************/
+
+	public String listeQuestion()
+	{
+
+	}
+
+	public int getChampReponse( int id_question )
+	{
+		
+	}
+
+	public boolean verifierImage(int id_image, int num_champs)
+	{
+
+	}	
 
 
 

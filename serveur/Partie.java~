@@ -145,11 +145,6 @@ public class Partie
 		return images[i];
 	}
 
-	public int[] getTabImages()
-	{
-		return images;
-	}
-
 /*******************************************************/
 /***          FONCTIONS MANIPULATION PARTIES         ***/
 /*******************************************************/
