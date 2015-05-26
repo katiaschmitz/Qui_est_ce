@@ -17,16 +17,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.io.PrintWriter;
-import java.net.*;
+
 import java.io.*;
-import java.util.*;
-import java.util.List;
-import java.util.ListIterator;
+
 
 
 public class ThreadJoueur implements Runnable
@@ -36,7 +31,6 @@ public class ThreadJoueur implements Runnable
 	/* informations relatives au joueur*/
 	private String pseudo="";
 	private Partie partie;
-	private boolean automatique;
 	/* acteurs permettant les intéractions joueur-serveur*/
 	private Socket socket_joueur;
 	private BufferedReader in;//entrée socket
@@ -207,7 +201,7 @@ public class ThreadJoueur implements Runnable
 	{
 		//COMPILATION
 		System.out.println("debut méthodeThreadjoueur listeAttente: ");
-		envoiMessageJoueur("3"+ serveur.listeAttente(this.pseudo)+ "ORDINATEUR");
+		envoiMessageJoueur("3:"+"ORDINATEUR"+ serveur.listeAttente(this.pseudo));
 	}
 
 	/**
@@ -239,10 +233,10 @@ public class ThreadJoueur implements Runnable
 				}
 				else
 					System.out.println("methodeThreadjoueur choixAdvesaire : adversaire a deja une demande");
-			}	
+			}
 			else
 				System.out.println("methodeThreadjoueur choixAdversaire : demande deja envoyée");
-		
+
 	}
 
 	/**
@@ -355,7 +349,6 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
- 	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle permet d'envoyer une image au joueur à travers la socket
 	 *
 	 *  @param image indice de l image a envoyer
@@ -363,13 +356,12 @@ public class ThreadJoueur implements Runnable
 	public void envoiImage(String image)
 	{
 		//COMPILATION
-		System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
+		//System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
 		int num_image = Integer.parseInt(image);
 		int i = serveur.recupererImagePartie(num_image,this.partie)  ;// recuperer le numero de l image a envoyer
 		Byte[] b = new Byte[256];
 		byte[] z = new byte[256];
 		int[] c = new int[256];
-		char[] d = new char[256];
 		int x;
 		FileInputStream fichiers = null;
 		try{fichiers=new FileInputStream("s"+i+".jpg");}
@@ -393,7 +385,6 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
-	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle recupere les scores puis les renvoi a l utilisateur dont le pseudo est donnée en argument
 	 *
 	 *  @param pseudo pseudo de l utilisateur ayant fait la demande
@@ -406,7 +397,6 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
-	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle traite le cas ou le joueur se deconnecte cest a dire elle supprime la partie et previent l autre joueur
 	 *  si une partie etait en cours
 	 *
@@ -429,7 +419,6 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
-	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle dit au joueur de  raffraichir sa liste d attente en ajoutant ou retirant le joueur dont le pseudo est donnée en 		 *  argument
 	 *
 	 *  @param pseudo pseudo du joueur a ajouter ou retirer
@@ -441,6 +430,8 @@ public class ThreadJoueur implements Runnable
 		System.out.println("debut méthodeThreadjoueurraffraichirListeAttente: "+pseudo+sens);
 		this.envoiMessageJoueur("17:"+ pseudo +":"+ sens);
 	}
+
+
 
 
 
@@ -472,13 +463,13 @@ public class ThreadJoueur implements Runnable
 	 */
 	public void envoiQuestionAuto(String num_question)
 	{
-		
+
 		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
 
 		/*recupere une chaine de caracteres contenant le nombre de personnage à baiser suivi de ces personnages( indice de la 			table de jeu*/
 		String tmp = serveur.recupererReponseQuestion(this.partie,this.pseudo,Integer.parseInt(num_question));
 		String[] infos = tmp.split(":");
-
+		
 		String nb = infos[0];
 		String img = "";
 
@@ -487,8 +478,8 @@ public class ThreadJoueur implements Runnable
 			img = img + ":" + infos[i];
 		}
 
-		this.envoiMessageJoueur("32:"+ img);// envoi des images a baissée au joueur
-		adv.envoiMessageJoueur("9"+ nb);// envoi nb case baissée à l adver
+		this.envoiMessageJoueur("32"+ img);// envoi des images a baissée au joueur
+		adv.envoiMessageJoueur("9:"+ nb);// envoi nb case baissée à l adver
 	}
 
 	/**
@@ -497,22 +488,10 @@ public class ThreadJoueur implements Runnable
 	 */
 	public void envoiQuestion()
 	{
-		envoiMessageJoueur("33:"+serveur.listeQuestion());
+		envoiMessageJoueur("33"+serveur.listeQuestion());
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
