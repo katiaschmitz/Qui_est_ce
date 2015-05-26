@@ -53,6 +53,8 @@ public class Fenetre extends JFrame  {
    JLabel[] label;
    ArrayList<JButton> advButton=new ArrayList<JButton>();
 
+   ArrayList<JButton> questButton = new ArrayList<JButton>();
+
    /*ajout*/
    private Box boiteListeAttente = Box.createVerticalBox();
    private Box boitePrincipale=Box.createHorizontalBox();
@@ -71,7 +73,8 @@ public class Fenetre extends JFrame  {
 
    private JButton revenirListe=new JButton("revenir liste") ;
 
-
+   String pseudo;
+   Boolean auto = false;
 
 
 
@@ -82,17 +85,17 @@ public class Fenetre extends JFrame  {
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocationRelativeTo(null);
     /**********ACCUEIL************/
-    try{
-    	   buttonIcon1 = ImageIO.read(new File("boutonConnexion.png"));
-    	   buttonIcon2 = ImageIO.read(new File("boutonInscription.png"));
+    /*try{
+    	   //buttonIcon1 = ImageIO.read(new File("boutonConnexion.png"));
+    	   //buttonIcon2 = ImageIO.read(new File("boutonInscription.png"));
     	   }
-    	   catch(IOException e){}
-    connexion =new JButton(new ImageIcon(buttonIcon1));
-    inscription = new JButton(new ImageIcon(buttonIcon2));
-    inscription.setBorder(BorderFactory.createEmptyBorder());
-    inscription.setContentAreaFilled(false);
-    connexion.setBorder(BorderFactory.createEmptyBorder());
-    connexion.setContentAreaFilled(false);
+    	   catch(IOException e){}*/
+    connexion = new JButton("connexion");
+    inscription = new JButton("inscription");
+   // inscription.setBorder(BorderFactory.createEmptyBorder());
+  //  buttonIcon2 inscription.setContentAreaFilled(false);
+  //  connexion.setBorder(BorderFactory.createEmptyBorder());
+  //  connexion.setContentAreaFilled(false);
     connexion.addActionListener(joueur);
     inscription.addActionListener(joueur);
     accueil.setLayout(new BorderLayout());
@@ -203,8 +206,37 @@ public class Fenetre extends JFrame  {
 	    		false;
 
   }
+/***************************************ici**************************************/
+ public void griserCases(String[] infos){
 
-  public void lancerPartie(){
+	 for(int i = 1; i<infos.length;++i){
+		 griser(Integer.parseInt(infos[i]));
+	 }
+ }
+
+
+ public void ajoutQuestion(String[] infos)
+  {
+	  Box b9 = Box.createVerticalBox();
+	  JButton aux;
+
+	  for(int i=1 ;i< infos.length; ++i)
+	  {
+		 try{ aux = new JButton(infos[i]);
+		  	  aux.addActionListener(joueur);
+		  	  questButton.add(aux);
+		  	  b9.add(aux);
+
+		 }catch (Exception ex) {System.out.println("Probleme dans la création des boutons");}
+	  }
+	  PartieEnCours.add(b9);
+	  this.setContentPane(PartieEnCours);
+	  this.invalidate();
+	  this.validate();
+  }
+
+	  public void lancerPartie(){
+
 
 	  JButton boutonAux ;
 	   Box b4 = Box.createVerticalBox();
@@ -213,7 +245,7 @@ public class Fenetre extends JFrame  {
 	  Box b7 = Box.createHorizontalBox();
 	  Box b8 = Box.createHorizontalBox();
 
-	  int j=0;
+	  int j =0;
 
 	  for(int i=0; i<24; i++){
 		  try{
@@ -238,7 +270,7 @@ public class Fenetre extends JFrame  {
 			  if(i>17 && i<24){
 				  b8.add(boutonPersonnage.get(i));
 			  }
-			  System.out.println("Bouton Personnage"+i+"crée");
+			 // System.out.println("Bouton Personnage"+i+"crée");
 		  } catch (Exception ex) {System.out.println("Probleme dans la création des boutons");}
 	  }
 	  b4.add(b5);

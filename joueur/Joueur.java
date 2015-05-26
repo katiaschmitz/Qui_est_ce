@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-
+import java.io.*;
 
 public class Joueur implements ActionListener  {
 
@@ -28,7 +28,7 @@ public class Joueur implements ActionListener  {
 		try{
 		etat=0;
 		nbAuto=0;
-		socket = new Socket("10.11.79.13",2019);
+		socket = new Socket("10.11.64.2",2019);
 		out = new PrintWriter(socket.getOutputStream());
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    System.out.println("Connecter");
@@ -84,17 +84,24 @@ public class Joueur implements ActionListener  {
 			if (rep == true){
 				envoiMessageServeur("5:1");
 				receptionImage();
-				fenetre.lancerPartie();}
+				fenetre.lancerPartie();
+			}
 
 			else if (rep == false){
 			envoiMessageServeur("5:0");
 				out.flush();
 			}
 		}
+		if(info[0].equals("33")){
+			fenetre.ajoutQuestion(info);
+		}
 
 		if (info[0].equals("6")&& info[1].equals("1")){
 		 	receptionImage();
 			fenetre.lancerPartie();
+			if(fenetre.auto)
+				envoiMessageServeur("33");
+
 
 			}
 
@@ -124,6 +131,10 @@ public class Joueur implements ActionListener  {
 		if(info[0].equals("14"))
 		{
 			fenetre.afficherScore(info);
+		}
+
+		if(info[0].equals("32")){
+			fenetre.griserCases(info);
 		}
 
 
@@ -158,7 +169,7 @@ public class Joueur implements ActionListener  {
 
 	public void lireImage(int im)
     {
-        System.out.println("numero "+im);
+       // System.out.println("numero "+im);
         byte r;
         int x;
         Integer z;
@@ -183,7 +194,7 @@ public class Joueur implements ActionListener  {
 		for(int i = 0 ; i<24; i++){
 			envoiMessageServeur("13:"+i);
 			lireImage(i);
-			System.out.println("Image "+i+" reçu");
+			//System.out.println("Image "+i+" reçu");
 		}
 	}
 
@@ -191,9 +202,11 @@ public class Joueur implements ActionListener  {
 	public void actionPerformed(ActionEvent arg0)
 	{
 		  String[] elt;
+		  String e;
 		  if(arg0.getSource() == fenetre.getBConnexion())
 		  {
 			  envoiMessageServeur("2:"+fenetre.getPseudo()+":"+fenetre.getMdp());
+			  fenetre.pseudo = fenetre.getPseudo();
 
 
 		  }
@@ -209,21 +222,38 @@ public class Joueur implements ActionListener  {
 				  if(fenetre.advButton.get(i).equals(arg0.getSource()))
 				{
 				  System.out.println("je suis la");
-		
-				 
+
+
 				  elt = fenetre.advButton.get(i).getText().split(" ");
-				  
+
 				  for(int j=0; j<elt.length; j++ )
 				  {
 				  System.out.println(elt[i]);}
-				  /* if(elt[0].equals("ORDINATEUR"))
-				  { 
-				        new JoueurAutomatique(fenetre.getPseudo());
-				  }*/
-				  envoiMessageServeur("4:"+elt[0]/*+fenetre.getPseudo()*/);
+				  if(elt[0].equals("ORDINATEUR"))
+				  {
+				        new JoueurAutomatique(fenetre.pseudo);
+				        try {
+				            Thread.sleep(2000);    // s'execute pendant 30 secondes
+				        } catch (InterruptedException ex) {}
+				        fenetre.auto = true;
+					  envoiMessageServeur("4:"+elt[0]+fenetre.pseudo);
+				  }
+				  else
+				  envoiMessageServeur("4:"+elt[0]);
 				}
 			  }
 
+		  }
+		  else if(fenetre.questButton.contains(arg0.getSource()))
+		  {
+			  for(int i=0; i<fenetre.questButton.size(); i++){
+				  if(fenetre.questButton.get(i).equals(arg0.getSource()))
+				{
+				  System.out.println("je suis la");
+				  e = fenetre.questButton.get(i).getText();
+				  envoiMessageServeur("31:"+ i/*+fenetre.getPseudo()*/);
+				}
+			  }
 		  }
 		  else if(fenetre.getBoutonEnvoyer()==arg0.getSource())
 		  {

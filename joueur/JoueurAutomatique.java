@@ -1,16 +1,23 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import java.awt.event.ActionListener;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 
-public class JoueurAutomatique{
+
+public class JoueurAutomatique implements Runnable{
 	Socket socket;
 	String pseudo;
 	int nb_question;
@@ -19,13 +26,13 @@ public class JoueurAutomatique{
 	BufferedReader in = null;
 	public JoueurAutomatique(String pseudo){
 		try{
-		socket = new Socket("10.11.79.13",2019);
+		socket = new Socket("10.11.64.2",2019);
 		out = new PrintWriter(socket.getOutputStream());
 	        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	        System.out.println("Connecter");
 		this.pseudo = "ORDINATEUR"+pseudo;
 		threadJoueurAuto = new Thread(this);
-		envoiMessageJoueur("30:"+pseudo);// inscription fictive
+		envoiMessageServeur("30:"+"ORDINATEUR"+pseudo);// inscription fictive
 		threadJoueurAuto.start();
 	        System.out.println("Thread Ecoute lancer");
 		}catch(IOException e){
@@ -35,10 +42,10 @@ public class JoueurAutomatique{
 
 	}
 
-	
+
 	public void run(){
-		
-		
+
+
 		while(true){
 		System.out.println(" debut méthodeAnalyseurServeur principale ");
 
@@ -51,9 +58,9 @@ public class JoueurAutomatique{
 			/* message pour compilation*/
 			System.out.println("attente message client");
 			/*recuperation du message*/
-			recu = th.getInput().readLine();// entrée de la socket
+			recu = getInput().readLine();// entrée de la socket
 			System.out.println("reception "+recu);
-		 
+
 			/*rajouter cas ou on recoit null attention pas de split*/
 			infos=recu.split(":");// decoupage de la chaine de caractère
 			demande=infos[0];// numero de la demande
@@ -76,7 +83,7 @@ public class JoueurAutomatique{
 			{
 				choisirQuestion();
 			}
-			
+
 
 
 			/*remise à zero des informations*/
@@ -85,8 +92,20 @@ public class JoueurAutomatique{
 				infos[i]="";
 
 		  }catch (IOException e){ }
-	
+
 		}
+	}
+
+	/**
+	 *  Renvoie l entree de la socket
+	 *
+	 * @return  entree socket
+	 */
+	public BufferedReader getInput()
+	{
+		//COMPILATION
+		System.out.println("debut méthodeThreadJoueur getInput: ");
+		return in;
 	}
 
 	public void envoiMessageServeur(String message)
@@ -97,17 +116,17 @@ public class JoueurAutomatique{
 	}
 
 	public void traiterDemandePartie(){
-		envoiMessageJoueur("5:1");
+		envoiMessageServeur("5:1");
 		/* on ne lance pas de partie graphique*/
 		/*on choisit un personnage au hasard*/
 		Random rand = new Random();
-		envoiMessageJoueur("7:"+rand.nextInt(24));
+		envoiMessageServeur("7:"+rand.nextInt(24));
 	}
-	
+
 	public void choisirQuestion()
 	{
 		Random rand = new Random();
-		envoiMessageJoueur("31:"+ rand.nextInt(nb_question));
+		envoiMessageServeur("31:"+ rand.nextInt(nb_question));
 	}
-		
+
 }
