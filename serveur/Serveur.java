@@ -398,23 +398,40 @@ public class Serveur
 
 
 
-/************rajout**********************/
+/************************************************/
+/********** fonctions parties automatique  ******/
+/************************************************/
 
-	public int getNbQuestion(){
-		return bdd.getNombreQuestion();// retourne le nombre de questions
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle demande à la base de données le nombre de questions disponibles
+	 */
+	public int recupereNbQuestion()
+	{
+		return bdd.getNombreQuestion();
 	}
 
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle permet de répondre  à une question posée.
+	 *  cest a dire elle répond à la question posée et renvoie la liste des personnages à baisser 
+	 *  avec le nombre de case baissées
+	 *
+	 *  @param p partie concernée
+	 *  @param pseudo pseudo du joueur posant la question
+	 *  @param question numero de la question posée
+	 */
 	public String recupererReponseQuestion(Partie p ,String pseudo, int question)
 	{
-		int[] tmp = p.getTabImages();
+		int[] tmp = p.getTabImages();// récupération des images de la partie
 
 		int nb = 0;
 		String img = "";
 
-		int id_image = p.getChoixAdversaire(pseudo);
+		int id_image = p.getChoixAdversaire(pseudo);// récuperation de l'image de l'adversaire
 
-		int num_champs = bdd.getChampReponse(question);
-		int bonne_valeur = bdd.getBonneReponse(tmp[id_image],num_champs);
+		int num_champs = bdd.getChampReponse(question);// recupération du champs réponse correspondant à la question 
+		int bonne_valeur = bdd.getBonneReponse(tmp[id_image],num_champs);// récupération de la réponse
 
 		/*verifier avec les images de la partie les reponse au question*/
 		for( int i =0; i < tmp.length; i++)

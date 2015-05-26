@@ -149,11 +149,11 @@ public class AnalyseurServeur
 			{
 				th.deconnexion();
 			}
-			else if(demande.equals("30"))// deconnexion
+			else if(demande.equals("30"))
 			{
 				th.creationJoueurAuto(infos[1]);
 			}
-			else if(demande.equals("31"))// deconnexion
+			else if(demande.equals("31"))
 			{
 				th.envoiQuestionAuto(infos[1]);
 			}

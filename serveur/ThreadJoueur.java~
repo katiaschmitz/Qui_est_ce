@@ -355,6 +355,7 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
+ 	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle permet d'envoyer une image au joueur à travers la socket
 	 *
 	 *  @param image indice de l image a envoyer
@@ -392,6 +393,7 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle recupere les scores puis les renvoi a l utilisateur dont le pseudo est donnée en argument
 	 *
 	 *  @param pseudo pseudo de l utilisateur ayant fait la demande
@@ -404,6 +406,7 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle traite le cas ou le joueur se deconnecte cest a dire elle supprime la partie et previent l autre joueur
 	 *  si une partie etait en cours
 	 *
@@ -426,6 +429,7 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
 	 *  Elle dit au joueur de  raffraichir sa liste d attente en ajoutant ou retirant le joueur dont le pseudo est donnée en 		 *  argument
 	 *
 	 *  @param pseudo pseudo du joueur a ajouter ou retirer
@@ -441,8 +445,14 @@ public class ThreadJoueur implements Runnable
 
 
 
-/*******************************ajout*****************************/
-
+/***********************fonction joueurAuto*****************************/
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle permet de creer un joueur automatique sans pour autant le connecté ou l'inscrire
+	 *  elle met son pseudo a jour
+	 *
+	 *  @param pseudo pseudo du joueur automatique ( ex ORDINATEURpseudo )
+	 */
 	public void creationJoueurAuto(String pseudo)
 	{
 		/*****élément de compilation***/
@@ -452,15 +462,24 @@ public class ThreadJoueur implements Runnable
 		envoiMessageJoueur("30:"+serveur.getNbQuestion());
 	}
 
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle permet au joueur de poser une question automatique.
+	 *  Elle récupère les personnages correspondant à la question (ceux à éliminer)et l'envoi au joueur
+	 *  Elle recupère le nombre de personnages baissés et l'envoi al adversaire
+	 *
+	 *  @param num_question numéro de la question posée (commence a 0)
+	 */
 	public void envoiQuestionAuto(String num_question)
 	{
 		
 		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
 
-		String tmp = serveur.recupererReponseQuestion(this.partie,adv.pseudo,Integer.parseInt(num_question));
+		/*recupere une chaine de caracteres contenant le nombre de personnage à baiser suivi de ces personnages( indice de la 			table de jeu*/
+		String tmp = serveur.recupererReponseQuestion(this.partie,this.pseudo,Integer.parseInt(num_question));
 		String[] infos = tmp.split(":");
 
-		String nb = infos[0];// numero de la demande
+		String nb = infos[0];
 		String img = "";
 
 		for(int i=1; i<infos.length; ++i)
@@ -469,9 +488,13 @@ public class ThreadJoueur implements Runnable
 		}
 
 		this.envoiMessageJoueur("32:"+ img);// envoi des images a baissée au joueur
-		adv.envoiMessageJoueur("9:"+ nb);// envoi nb case baissée à l adver
+		adv.envoiMessageJoueur("9"+ nb);// envoi nb case baissée à l adver
 	}
 
+	/**
+	 *  Cette fonction est appelée par l'AnalyseurServeur.
+	 *  Elle permet d'envoyer la liste des questions au joueur
+	 */
 	public void envoiQuestion()
 	{
 		envoiMessageJoueur("33:"+serveur.listeQuestion());

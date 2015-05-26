@@ -149,15 +149,15 @@ public class AnalyseurServeur
 			{
 				th.deconnexion();
 			}
-			else if(demande.equals("30"))
+			else if(demande.equals("30"))// creer le joueur automatique
 			{
 				th.creationJoueurAuto(infos[1]);
 			}
-			else if(demande.equals("31"))
+			else if(demande.equals("31"))// permet au joueur ( et joueur automatique) de poser une question
 			{
 				th.envoiQuestionAuto(infos[1]);
 			}
-			else if(demande.equals("33"))
+			else if(demande.equals("33"))// envoyer la liste de question automatique
 			{
 				th.envoiQuestion();
 			}

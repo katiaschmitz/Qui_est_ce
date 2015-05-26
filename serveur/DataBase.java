@@ -484,17 +484,18 @@ public class DataBase
 	}
 
 
-	public int getChampReponse( int id_question )
+	public int[] getChampReponse( int id_question )
 	{
 		PreparedStatement req=null;
-		int nombre=-1;
+		int[2] nombre=[-1;-1]
 		try
 		{
-			req=connexion.prepareStatement( "select r  from question where id = ?");
+			req=connexion.prepareStatement( "select r,v  from question where id = ?");
 			req.setInt(1,id_question);
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
-	    		nombre=resultat.getInt("r");
+	    		nombre[0] = resultat.getInt("r");
+			nombre[1] = resultat.getInt("v");
 		}
 		catch(SQLException ex){}
 		return nombre;
