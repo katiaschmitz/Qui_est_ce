@@ -76,7 +76,12 @@ public class Fenetre extends JFrame  {
    String pseudo;
    Boolean auto = false;
 
-
+   Box b4 = Box.createVerticalBox();
+	  Box b5 = Box.createHorizontalBox();
+	  Box b6 = Box.createHorizontalBox();
+	  Box b7 = Box.createHorizontalBox();
+	  Box b8 = Box.createHorizontalBox();
+	  Box b9 = Box.createVerticalBox();
 
   public Fenetre(Joueur j) {
 	joueur=j;
@@ -217,7 +222,7 @@ public class Fenetre extends JFrame  {
 
  public void ajoutQuestion(String[] infos)
   {
-	  Box b9 = Box.createVerticalBox();
+
 	  JButton aux;
 
 	  for(int i=1 ;i< infos.length; ++i)
@@ -235,18 +240,23 @@ public class Fenetre extends JFrame  {
 	  this.validate();
   }
 
+
 	  public void lancerPartie(){
 
+		  boiteGauche.removeAll();
+		  boitePrincipale.removeAll();
+		  //PartieEnCours.updateUI();
 
+		  boutonPersonnage.clear();
 	  JButton boutonAux ;
-	   Box b4 = Box.createVerticalBox();
-	  Box b5 = Box.createHorizontalBox();
-	  Box b6 = Box.createHorizontalBox();
-	  Box b7 = Box.createHorizontalBox();
-	  Box b8 = Box.createHorizontalBox();
-
+	  b9.removeAll();
+	  b4.removeAll();
+	  b5.removeAll();
+	  b6.removeAll();
+	  b7.removeAll();
+	  b8.removeAll();
 	  int j =0;
-
+	  System.out.println("******************************************************");
 	  for(int i=0; i<24; i++){
 		  try{
 
@@ -258,6 +268,7 @@ public class Fenetre extends JFrame  {
 
 			  boutonAux.addActionListener(joueur);
 			  boutonPersonnage.add(boutonAux);
+
 			  if(i<6){
 				  b5.add(boutonPersonnage.get(i));
 			  }
@@ -290,11 +301,15 @@ public class Fenetre extends JFrame  {
 
 	  validerChat.addActionListener(joueur);
 	  proposition.addActionListener(joueur);
-
+	  this.remove(PartieEnCours);
 	  PartieEnCours.add(boitePrincipale);
+	  PartieEnCours.updateUI();
 	  this.setContentPane(PartieEnCours);
 	  this.invalidate();
 	  this.validate();
+	  this.repaint();
+
+
 
   }
 

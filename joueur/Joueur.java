@@ -28,7 +28,7 @@ public class Joueur implements ActionListener  {
 		try{
 		etat=0;
 		nbAuto=0;
-		socket = new Socket("10.11.78.11",2019);
+		socket = new Socket("10.11.80.2",2019);
 		out = new PrintWriter(socket.getOutputStream());
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    System.out.println("Connecter");
@@ -223,26 +223,23 @@ public class Joueur implements ActionListener  {
 				{
 				  System.out.println("je suis la");
 
+				  e = fenetre.advButton.get(i).getText();
 
-				  elt = fenetre.advButton.get(i).getText().split(" ");
 
-				  for(int j=0; j<elt.length; j++ )
-				  {
-				  System.out.println(elt[i]);}
-				  if(elt[0].equals("ORDINATEUR"))
+				  if(e.equals("ORDINATEUR"))
 				  {
 				        new JoueurAutomatique(fenetre.pseudo);
 				        try {
 				            Thread.sleep(2000);    // s'execute pendant 30 secondes
 				        } catch (InterruptedException ex) {}
 				        fenetre.auto = true;
-					  envoiMessageServeur("4:"+elt[0]+"-"+fenetre.pseudo);
+					  envoiMessageServeur("4:"+e+"-"+fenetre.pseudo);
 				  }
 				  else
-				  envoiMessageServeur("4:"+elt[0]);
-				}
-			  }
+				  envoiMessageServeur("4:"+e);
 
+		  }
+			  }
 		  }
 		  else if(fenetre.questButton.contains(arg0.getSource()))
 		  {
@@ -281,6 +278,7 @@ public class Joueur implements ActionListener  {
 					  else if(etat==2)
 					  {
 						  envoiMessageServeur("10:"+i);
+						  fenetre.griser(i);
 
 					  }
 					  else{}

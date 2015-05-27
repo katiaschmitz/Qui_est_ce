@@ -21,19 +21,28 @@ public class JoueurAutomatique implements Runnable{
 	Socket socket;
 	String pseudo;
 	int nb_question;
+	int nb_case_baissee;
+	ArrayList<Integer> questionsPosees;
+	ArrayList<Integer> imageBaissee;
 	Thread threadJoueurAuto;
 	PrintWriter out = null;
 	BufferedReader in = null;
-	public JoueurAutomatique(String pseudo){
+
+	public JoueurAutomatique(String pseudo)
+	{
+
 		try{
-		socket = new Socket("10.11.78.11",2019);
-		out = new PrintWriter(socket.getOutputStream());
+			socket = new Socket("10.11.80.2",2019);
+			out = new PrintWriter(socket.getOutputStream());
 	        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	        System.out.println("Connecter");
-		this.pseudo = "ORDINATEUR"+pseudo;
-		threadJoueurAuto = new Thread(this);
-		envoiMessageServeur("30:"+"ORDINATEUR-"+pseudo);// inscription fictive
-		threadJoueurAuto.start();
+	        nb_case_baissee =1;// nb case baissee par tour
+			this.pseudo = "ORDINATEUR"+pseudo;
+			questionsPosees = new ArrayList<Integer>();
+			imageBaissee = new ArrayList<Integer>();
+			threadJoueurAuto = new Thread(this);
+			envoiMessageServeur("30:"+"ORDINATEUR-"+pseudo);// inscription fictive
+			threadJoueurAuto.start();
 	        System.out.println("Thread Ecoute lancer");
 		}catch(IOException e){
 		 System.err.println("Aucun serveur � l'�coute du port "+socket.getLocalPort());
@@ -81,7 +90,30 @@ public class JoueurAutomatique implements Runnable{
 			}
 			else if(demande.equals("9"))
 			{
-				choisirQuestion();
+				if(nb_case_baissee == 0 || nb_question == questionsPosees.size())
+				{
+					faireProposition();
+					nb_case_baissee = 1;
+				}
+				else
+				{
+					choisirQuestion();
+				}
+			}
+			else if(demande.equals("32"))
+			{
+				nb_case_baissee =0;
+				for(int h=1;h<infos.length;++h)
+				{
+					if(!imageBaissee.contains(Integer.parseInt(infos[h])))
+					{
+						imageBaissee.add(Integer.parseInt(infos[h]));
+						nb_case_baissee = nb_case_baissee +1;
+					}
+				}
+				afficherImageBaissee();
+				System.out.println("NB CASE BAISSEE "+ nb_case_baissee );
+
 			}
 
 
@@ -95,6 +127,19 @@ public class JoueurAutomatique implements Runnable{
 
 		}
 	}
+
+	public void afficherImageBaissee(){
+
+		String tmp = "";
+		for(int i=0;i<imageBaissee.size();++i)
+		{
+			tmp = tmp + " " + imageBaissee.get(i);
+		}
+
+		System.out.println(" case baissee "+tmp );
+
+	}
+
 
 	/**
 	 *  Renvoie l entree de la socket
@@ -126,10 +171,30 @@ public class JoueurAutomatique implements Runnable{
 	public void choisirQuestion()
 	{
 		Random rand = new Random();
-		envoiMessageServeur("31:"+ rand.nextInt(nb_question));
-		System.out.println("ORDIANTEUR A JOUER UN TOUR");
+		int nb = rand.nextInt(nb_question);
+		while (questionsPosees.contains(nb))
+			nb = rand.nextInt(nb_question);
+
+		questionsPosees.add(nb);
+		envoiMessageServeur("11:question posee "+nb);
+		envoiMessageServeur("31:"+nb );
+		System.out.println("ORDINATEUR A JOUER UN TOUR");
+
+	}
+
+	public void faireProposition()
+	{
+		Random rand = new Random();
+		int nb = rand.nextInt(24);
+		while(imageBaissee.contains(nb))
+			nb = rand.nextInt(24);
+
+		imageBaissee.add(nb);
+		envoiMessageServeur("11:perso propose "+nb);
+		envoiMessageServeur("10:"+nb);
+	}
 
 
 	}
 
-}
+
