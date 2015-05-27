@@ -378,18 +378,25 @@ public class Serveur
 	 */
 	public void raffraichirListeAttente(String joueur, int sens)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur raffraichirListeAttente: "+ joueur + sens);
-		ThreadJoueur res = null;
-		for(int i=0;i<joueurs.size() ;i++)
-		{
-			if(!(joueurs.get(i).getPseudo().equals(joueur)))
-				{
-					res = joueurs.get(i);
-					res.raffraichirListeAttente(joueur,sens);
-				}
+		if (!estOrdinateur(joueur)){//COMPILATION
+			System.out.println("debut méthodeServeur raffraichirListeAttente: "+ joueur + sens);
+			ThreadJoueur res = null;
+			for(int i=0;i<joueurs.size() ;i++)
+			{
+				if(!(joueurs.get(i).getPseudo().equals(joueur) ))
+					{
+						res = joueurs.get(i);
+						res.raffraichirListeAttente(joueur,sens);
+					}
 
+			}
 		}
+	}
+
+	public boolean estOrdinateur(String pseudo)
+	{
+		String[] tmp = pseudo.split("-");
+		return tmp[0].equals("ORDINATEUR");
 	}
 
 

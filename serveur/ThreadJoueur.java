@@ -319,17 +319,27 @@ public class ThreadJoueur implements Runnable
 		int num_image = Integer.parseInt(num_perso);
 		boolean rep_serveur;
 		rep_serveur = serveur.verifierReponse(this.partie,this.pseudo,num_image);
+		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
+
 		if(rep_serveur == true)
 		{
-			ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
 			envoiMessageJoueur("10:Gagnée");//gagnee
 			adv.envoiMessageJoueur("10:Perdue");//perdu
 			serveur.majScore(this.pseudo,adv.pseudo);
 			afficherScores();
 			adv.afficherScores();
 			serveur.supprimerPartie(this.partie);
+			serveur.raffraichirListeAttente(this.pseudo, 1);
+			serveur.raffraichirListeAttente(adv.pseudo,1);
+
+
 		}
-		else envoiMessageJoueur("20");
+		else
+		{
+				envoiMessageJoueur("20");
+				adv.envoiMessageJoueur("9:0" );
+
+		}
 	}
 
 	/**
@@ -469,7 +479,7 @@ public class ThreadJoueur implements Runnable
 		/*recupere une chaine de caracteres contenant le nombre de personnage à baiser suivi de ces personnages( indice de la 			table de jeu*/
 		String tmp = serveur.recupererReponseQuestion(this.partie,this.pseudo,Integer.parseInt(num_question));
 		String[] infos = tmp.split(":");
-		
+
 		String nb = infos[0];
 		String img = "";
 
