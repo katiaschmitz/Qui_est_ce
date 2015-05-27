@@ -41,7 +41,7 @@ import javax.swing.JTextField;
 		
 		
 		
-
+		
 		/*************** Case Personnage choisie ********************/
 		
 		
@@ -52,7 +52,7 @@ import javax.swing.JTextField;
 		/*************** Declaration Panel avec fond d'ecran********************/
 		
 	
-		private ImagePanel PanelPerso = new ImagePanel((new ImageIcon("game.jpg").getImage()));
+		private ImagePanel PanelPerso = new ImagePanel((new ImageIcon("fond.jpg").getImage()));
 		
 		/*************** Declaration Case Personnages********************/
 		
@@ -90,9 +90,8 @@ import javax.swing.JTextField;
 	
 		public FenetreJeuOrdi (){
 			
-			this.setVisible(true);
 			
-			//this.setPreferredSize(new Dimension(1000,600));
+			this.setPreferredSize(new Dimension(1100,550));
 			
 			/****  GridLayout servira � bien organiser notre grille de personnage *****/
 			
@@ -163,14 +162,14 @@ import javax.swing.JTextField;
             gc.gridwidth = 1;
             
             
-		    this.setResizable(false);
+		    
 		    CreationBouton();
 		    
 		    
 		    PaletteAdversaire ();
 		   
 		    
-		    
+		    this.setResizable(false);
 		    this.add(PanelPerso);
 		    this.pack(); 
 			this.setContentPane(PanelPerso);
@@ -188,19 +187,17 @@ import javax.swing.JTextField;
 		
 			int i = 0;
 			while (i<24){
-			for(int x=2; x<8; x++){
-				for(int y=0; y<4;y++)
+				for(int y=0; y<4;y++){
+						for(int x=2; x<8; x++){
 						  try{		
 							  
 							  buttonIcon3 = ImageIO.read(new File("j"+i+".png"));
 							  boutonAux =new JButton(new ImageIcon(buttonIcon3));
-							  //boutonAux.setSize(5,5);
 							  boutonAux.setBorder(BorderFactory.createEmptyBorder());
 							  boutonAux.setContentAreaFilled(false);
 							  boutonAux.setPressedIcon(new ImageIcon("j"+i+"_"+i+".png"));
 							  boutonAux.setSelectedIcon(new ImageIcon("Click.png"));
-							//  boutonAux.setSize(30, 30);
-							 // boutonAux.addActionListener(this);
+							  boutonAux.addActionListener(this);
 							  boutonPersonnage.add(boutonAux);
 							  gc.anchor = GridBagConstraints.BASELINE;
 							  gc.gridx = x;
@@ -213,7 +210,7 @@ import javax.swing.JTextField;
 						  } catch (Exception ex) {System.out.println("Probleme dans la création des boutons");}
 				 	
 				}
-			}
+			}}
 		}
 		
 		public void PaletteAdversaire (){
@@ -230,15 +227,15 @@ import javax.swing.JTextField;
             gc3.gridwidth = 1;
 			int i = 0;
 			while (i<24){
-			for(int x=0; x<6; x++){
-				for(int y=1; y<5;y++)
+			for(int y=1; y<5;y++){
+				for(int x=0; x<6; x++){
 						  try{		
 							  buttonIcon3 = ImageIO.read(new File("mini/j"+i+".png"));
 							  boutonAux =new JButton(new ImageIcon(buttonIcon3));
 							  boutonAux.setBorder(BorderFactory.createEmptyBorder());
 							  boutonAux.setContentAreaFilled(false);
 							  //boutonAux.setSelectedIcon(new ImageIcon("Click.png"));
-							 // boutonAux.addActionListener(this);
+							//  boutonAux.addActionListener(this);
 							  boutonPersonnageAdv.add(boutonAux);
 							  gc3.anchor = GridBagConstraints.BASELINE;
 							
@@ -249,7 +246,8 @@ import javax.swing.JTextField;
 							  JeuxAdversaire.add(boutonPersonnageAdv.get(i),gc3);
 							  System.out.println("Bouton Personnage"+i+"crée � la position x="+x+" y="+y);
 							  i++;
-						  } catch (Exception ex) {System.out.println("Probleme dans la création des boutons");}
+						  } catch (Exception ex) {System.out.println("Probleme dans la création des boutons");}}
+						  
 							gc.gridheight =2;
 							gc.anchor = GridBagConstraints.BASELINE;
 				            gc.fill = GridBagConstraints.VERTICAL;
@@ -262,7 +260,7 @@ import javax.swing.JTextField;
 		}
 		
 	
-		
+		/****************** Methode permettant de generer un son ***********/
 		public void sonVictoire(){
 			try {
 			    AudioInputStream stream;
@@ -315,6 +313,13 @@ import javax.swing.JTextField;
 			 if  (arg0.getSource() == question)
 			 {			 
 				 DialogQuestion zd = new DialogQuestion(null, "Questions", true);
+			 }
+			 else if (boutonPersonnage.contains(arg0.getSource())){
+				 for(int k = 0; k<boutonPersonnage.size(); k++){
+					 
+					 if (boutonPersonnage.get(k).equals(arg0.getSource()))
+				 	System.out.println("Bouton"+k+"cliquer");
+				 }
 			 }
 		  }
 
