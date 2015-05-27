@@ -26,13 +26,13 @@ public class JoueurAutomatique implements Runnable{
 	BufferedReader in = null;
 	public JoueurAutomatique(String pseudo){
 		try{
-		socket = new Socket("10.11.64.2",2019);
+		socket = new Socket("10.11.78.11",2019);
 		out = new PrintWriter(socket.getOutputStream());
 	        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	        System.out.println("Connecter");
 		this.pseudo = "ORDINATEUR"+pseudo;
 		threadJoueurAuto = new Thread(this);
-		envoiMessageServeur("30:"+"ORDINATEUR"+pseudo);// inscription fictive
+		envoiMessageServeur("30:"+"ORDINATEUR-"+pseudo);// inscription fictive
 		threadJoueurAuto.start();
 	        System.out.println("Thread Ecoute lancer");
 		}catch(IOException e){
@@ -127,6 +127,9 @@ public class JoueurAutomatique implements Runnable{
 	{
 		Random rand = new Random();
 		envoiMessageServeur("31:"+ rand.nextInt(nb_question));
+		System.out.println("ORDIANTEUR A JOUER UN TOUR");
+
+
 	}
 
 }

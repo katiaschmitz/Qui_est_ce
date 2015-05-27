@@ -28,7 +28,7 @@ public class Joueur implements ActionListener  {
 		try{
 		etat=0;
 		nbAuto=0;
-		socket = new Socket("10.11.64.2",2019);
+		socket = new Socket("10.11.78.11",2019);
 		out = new PrintWriter(socket.getOutputStream());
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    System.out.println("Connecter");
@@ -236,7 +236,7 @@ public class Joueur implements ActionListener  {
 				            Thread.sleep(2000);    // s'execute pendant 30 secondes
 				        } catch (InterruptedException ex) {}
 				        fenetre.auto = true;
-					  envoiMessageServeur("4:"+elt[0]+fenetre.pseudo);
+					  envoiMessageServeur("4:"+elt[0]+"-"+fenetre.pseudo);
 				  }
 				  else
 				  envoiMessageServeur("4:"+elt[0]);
@@ -252,6 +252,7 @@ public class Joueur implements ActionListener  {
 				  System.out.println("je suis la");
 				  e = fenetre.questButton.get(i).getText();
 				  envoiMessageServeur("31:"+ i/*+fenetre.getPseudo()*/);
+
 				}
 			  }
 		  }
