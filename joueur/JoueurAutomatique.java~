@@ -72,14 +72,11 @@ public class JoueurAutomatique{
 			{
 				nb_question = Integer.parseInt(infos[1]);
 			}
-			else if(demande.equals("9"))
+			else if(demande.equals("9"))// jouer un tour
 			{
 				choisirQuestion();
 			}
-			else if(demande.equals("32"))
-			{
-				choisirQuestion();
-			}
+			
 
 
 			/*remise à zero des informations*/
