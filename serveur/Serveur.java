@@ -10,18 +10,14 @@
  *  correspondant aux joueurs, les différentes parties
  *
  */
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+
+
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.io.PrintWriter;
-import java.net.*;
-import java.io.*;
+
 import java.util.*;
+
+
 
 
 
@@ -111,7 +107,7 @@ public class Serveur
 		System.out.println("debut méthodeServeur main ");
 		System.out.println("***************** ");
 
-		Serveur x=new Serveur();
+		Serveur x = new Serveur();
 
 
 		/*x.bdd.inscription("omar","hin");
@@ -382,97 +378,95 @@ public class Serveur
 	 */
 	public void raffraichirListeAttente(String joueur, int sens)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur raffraichirListeAttente: "+ joueur + sens);
-		ThreadJoueur res = null;
-		for(int i=0;i<joueurs.size() ;i++)
+		if (!estOrdinateur(joueur)){//COMPILATION
+			System.out.println("debut méthodeServeur raffraichirListeAttente: "+ joueur + sens);
+			ThreadJoueur res = null;
+			for(int i=0;i<joueurs.size() ;i++)
+			{
+				if(!(joueurs.get(i).getPseudo().equals(joueur) ))
+					{
+						res = joueurs.get(i);
+						res.raffraichirListeAttente(joueur,sens);
+					}
+
+			}
+		}
+	}
+
+	public boolean estOrdinateur(String pseudo)
+	{
+		String[] tmp = pseudo.split("-");
+		return tmp[0].equals("ORDINATEUR");
+	}
+
+
+
+	/************************************************/
+	/********** fonctions parties automatique  ******/
+	/************************************************/
+
+		/**
+		 *  Cette fonction est appelée par un ThreadJoueur.
+		 *  Elle demande à la base de données le nombre de questions disponibles
+		 */
+		public int recupereNbQuestion()
 		{
-			if(!(joueurs.get(i).getPseudo().equals(joueur)))
+			return bdd.getNombreQuestion();
+		}
+
+		/**
+		 *  Cette fonction est appelée par un ThreadJoueur.
+		 *  Elle permet de répondre  à une question posée.
+		 *  cest a dire elle répond à la question posée et renvoie la liste des personnages à baisser
+		 *  avec le nombre de case baissées
+		 *
+		 *  @param p partie concernée
+		 *  @param pseudo pseudo du joueur posant la question
+		 *  @param question numero de la question posée
+		 */
+		public String recupererReponseQuestion(Partie p ,String pseudo, int question)
+		{
+			int[] tmp = p.getTabImages();// récupération des images de la partie
+
+			int nb = 0;
+			String img = "";
+			System.out.println("/**************verification question***************/");
+			System.out.println("num question"+ question);
+			int id_image = p.getChoixAdversaire(pseudo);// récuperation de l'image de l'adversaire
+			System.out.println("image du joueur(indice)"+id_image);
+			int[] num_champs = bdd.getChampReponse(question);// recupération du champs réponse correspondant à la question
+			System.out.println("numero du champs"+num_champs[0]+" valeur du champs pour la question"+num_champs[1]);
+			int val_img = bdd.getBonneReponse(tmp[id_image],num_champs[0]);// récupération de la réponse
+			System.out.println("numero image adversaire"+tmp[id_image]);
+			System.out.println("valeur image adversaire"+ val_img);
+			boolean val_ref;
+
+			if(num_champs[1]==val_img)
+			{
+				val_ref = true;
+			}
+			else
+			{
+				val_ref = false;
+			}
+			/*verifier avec les images de la partie les reponse au question*/
+			for( int i =0; i < tmp.length; i++)
+			{
+				if( bdd.verifierImage( tmp[i], num_champs[0],num_champs[1],val_ref))
 				{
-					res = joueurs.get(i);
-					res.raffraichirListeAttente(joueur,sens);
+					System.out.println("image ok "+ i);
+					nb = nb +1;
+					img = img + ":" + i ;
 				}
 
-		}
-	}
-
-
-
-/************************************************/
-/********** fonctions parties automatique  ******/
-/************************************************/
-
-	/**
-	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle demande à la base de données le nombre de questions disponibles
-	 */
-	public int recupereNbQuestion()
-	{
-		return bdd.getNombreQuestion();
-	}
-
-	/**
-	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle permet de répondre  à une question posée.
-	 *  cest a dire elle répond à la question posée et renvoie la liste des personnages à baisser 
-	 *  avec le nombre de case baissées
-	 *
-	 *  @param p partie concernée
-	 *  @param pseudo pseudo du joueur posant la question
-	 *  @param question numero de la question posée
-	 */
-	public String recupererReponseQuestion(Partie p ,String pseudo, int question)
-	{
-		int[] tmp = p.getTabImages();// récupération des images de la partie
-
-		int nb = 0;
-		String img = "";
-
-		int id_image = p.getChoixAdversaire(pseudo);// récuperation de l'image de l'adversaire
-
-		int num_champs = bdd.getChampReponse(question);// recupération du champs réponse correspondant à la question 
-		int bonne_valeur = bdd.getBonneReponse(tmp[id_image],num_champs);// récupération de la réponse
-
-		/*verifier avec les images de la partie les reponse au question*/
-		for( int i =0; i < tmp.length; i++)
-		{
-			if( bdd.verifierImage( tmp[i], num_champs, bonne_valeur))
-			{
-				nb = nb +1;
-				img = img + ":" + i ;
 			}
 
+			return nb + img ;//le nb de case baissées et les indices des cases baissées
 		}
-				
-		return nb + ":" + img ;//le nb de case baissées et les indices des cases baissées
+
+		public String listeQuestion()
+		{
+			return bdd.listeQuestion();
+		}
+
 	}
-
-	public String listeQuestion()
-	{
-		return bdd.listeQuestion();
-	}
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

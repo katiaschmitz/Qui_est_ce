@@ -53,6 +53,8 @@ public class Fenetre extends JFrame  {
    JLabel[] label;
    ArrayList<JButton> advButton=new ArrayList<JButton>();
 
+   ArrayList<JButton> questButton = new ArrayList<JButton>();
+
    /*ajout*/
    private Box boiteListeAttente = Box.createVerticalBox();
    private Box boitePrincipale=Box.createHorizontalBox();
@@ -71,9 +73,15 @@ public class Fenetre extends JFrame  {
 
    private JButton revenirListe=new JButton("revenir liste") ;
 
+   String pseudo;
+   Boolean auto = false;
 
-
-
+   Box b4 = Box.createVerticalBox();
+	  Box b5 = Box.createHorizontalBox();
+	  Box b6 = Box.createHorizontalBox();
+	  Box b7 = Box.createHorizontalBox();
+	  Box b8 = Box.createHorizontalBox();
+	  Box b9 = Box.createVerticalBox();
 
   public Fenetre(Joueur j) {
 	joueur=j;
@@ -82,17 +90,17 @@ public class Fenetre extends JFrame  {
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocationRelativeTo(null);
     /**********ACCUEIL************/
-    try{
-    	   buttonIcon1 = ImageIO.read(new File("boutonConnexion.png"));
-    	   buttonIcon2 = ImageIO.read(new File("boutonInscription.png"));
+    /*try{
+    	   //buttonIcon1 = ImageIO.read(new File("boutonConnexion.png"));
+    	   //buttonIcon2 = ImageIO.read(new File("boutonInscription.png"));
     	   }
-    	   catch(IOException e){}
-    connexion =new JButton(new ImageIcon(buttonIcon1));
-    inscription = new JButton(new ImageIcon(buttonIcon2));
-    inscription.setBorder(BorderFactory.createEmptyBorder());
-    inscription.setContentAreaFilled(false);
-    connexion.setBorder(BorderFactory.createEmptyBorder());
-    connexion.setContentAreaFilled(false);
+    	   catch(IOException e){}*/
+    connexion = new JButton("connexion");
+    inscription = new JButton("inscription");
+   // inscription.setBorder(BorderFactory.createEmptyBorder());
+  //  buttonIcon2 inscription.setContentAreaFilled(false);
+  //  connexion.setBorder(BorderFactory.createEmptyBorder());
+  //  connexion.setContentAreaFilled(false);
     connexion.addActionListener(joueur);
     inscription.addActionListener(joueur);
     accueil.setLayout(new BorderLayout());
@@ -203,18 +211,52 @@ public class Fenetre extends JFrame  {
 	    		false;
 
   }
+/***************************************ici**************************************/
+ public void griserCases(String[] infos){
 
-  public void lancerPartie(){
+	 for(int i = 1; i<infos.length;++i){
+		 griser(Integer.parseInt(infos[i]));
+	 }
+ }
 
+
+ public void ajoutQuestion(String[] infos)
+  {
+
+	  JButton aux;
+
+	  for(int i=1 ;i< infos.length; ++i)
+	  {
+		 try{ aux = new JButton(infos[i]);
+		  	  aux.addActionListener(joueur);
+		  	  questButton.add(aux);
+		  	  b9.add(aux);
+
+		 }catch (Exception ex) {System.out.println("Probleme dans la création des boutons");}
+	  }
+	  PartieEnCours.add(b9);
+	  this.setContentPane(PartieEnCours);
+	  this.invalidate();
+	  this.validate();
+  }
+
+
+	  public void lancerPartie(){
+
+		  boiteGauche.removeAll();
+		  boitePrincipale.removeAll();
+		  //PartieEnCours.updateUI();
+
+		  boutonPersonnage.clear();
 	  JButton boutonAux ;
-	   Box b4 = Box.createVerticalBox();
-	  Box b5 = Box.createHorizontalBox();
-	  Box b6 = Box.createHorizontalBox();
-	  Box b7 = Box.createHorizontalBox();
-	  Box b8 = Box.createHorizontalBox();
-
-	  int j=0;
-
+	  b9.removeAll();
+	  b4.removeAll();
+	  b5.removeAll();
+	  b6.removeAll();
+	  b7.removeAll();
+	  b8.removeAll();
+	  int j =0;
+	  System.out.println("******************************************************");
 	  for(int i=0; i<24; i++){
 		  try{
 
@@ -226,6 +268,7 @@ public class Fenetre extends JFrame  {
 
 			  boutonAux.addActionListener(joueur);
 			  boutonPersonnage.add(boutonAux);
+
 			  if(i<6){
 				  b5.add(boutonPersonnage.get(i));
 			  }
@@ -238,7 +281,7 @@ public class Fenetre extends JFrame  {
 			  if(i>17 && i<24){
 				  b8.add(boutonPersonnage.get(i));
 			  }
-			  System.out.println("Bouton Personnage"+i+"crée");
+			 // System.out.println("Bouton Personnage"+i+"crée");
 		  } catch (Exception ex) {System.out.println("Probleme dans la création des boutons");}
 	  }
 	  b4.add(b5);
@@ -258,11 +301,15 @@ public class Fenetre extends JFrame  {
 
 	  validerChat.addActionListener(joueur);
 	  proposition.addActionListener(joueur);
-
+	  this.remove(PartieEnCours);
 	  PartieEnCours.add(boitePrincipale);
+	  PartieEnCours.updateUI();
 	  this.setContentPane(PartieEnCours);
 	  this.invalidate();
 	  this.validate();
+	  this.repaint();
+
+
 
   }
 

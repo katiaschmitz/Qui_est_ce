@@ -2,11 +2,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.sql.*;
+
 
 
 /**
@@ -487,48 +484,70 @@ public class DataBase
 	public int[] getChampReponse( int id_question )
 	{
 		PreparedStatement req=null;
-		int[2] nombre=[-1;-1]
+		int[] nombre= {-1,-1} ;
 		try
 		{
-			req=connexion.prepareStatement( "select r,v  from question where id = ?");
+			req=connexion.prepareStatement( "select r,ref  from question where id = ?");
 			req.setInt(1,id_question);
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
-	    		nombre[0] = resultat.getInt("r");
-			nombre[1] = resultat.getInt("v");
+	    		nombre[0]=resultat.getInt("r");
+	    		nombre[1] = resultat.getInt("ref");
 		}
 		catch(SQLException ex){}
+		System.out.println("champ" + nombre[0] + " valeur"+ nombre[1]);
 		return nombre;
 
 	}
 
-	public boolean verifierImage(int id_image, int num_champs,int br)
+
+	public boolean verifierImage(int id_image, int num_champs,int br, boolean correct)
 	{
 		PreparedStatement req=null;
 		boolean x = false;
-		String ch="champ";
+		String ch="champ"+num_champs;
 		int res;
-		try
+
+		if(correct)
 		{
-			req=connexion.prepareStatement( "select ? as rep from image where id=?");
-			req.setString(1,ch+num_champs);
-			req.setInt(2,id_image);
-			ResultSet resultat = req.executeQuery();
-			resultat.next();
+			try
+			{
+				req=connexion.prepareStatement( "select "+ch+" as rep from image where id=?");
+				req.setInt(1,id_image);
+				ResultSet resultat = req.executeQuery();
+				resultat.next();
 	    		res=resultat.getInt("rep");
-			if(res==br)
-				x=true;
-			else 
-				x=false;
-		
+	    		if(res!=br)
+	    			x=true;
+	    		else
+	    			x=false;
+
+			}
+			catch(SQLException ex){}
 		}
-		catch(SQLException ex){}
+		else
+		{
+			try
+			{
+				req=connexion.prepareStatement( "select "+ch+" as rep from image where id=?");
+				req.setInt(1,id_image);
+				ResultSet resultat = req.executeQuery();
+				resultat.next();
+	    		res=resultat.getInt("rep");
+	    		if(res==br)
+	    			x=true;
+	    		else
+	    			x=false;
+
+			}
+			catch(SQLException ex){}
+		}
 		return x;
 	}
 
 	public int getNombreQuestion()
 	{
-		
+
 		PreparedStatement req=null;
 		int nombre=-1;
 		try
@@ -542,22 +561,28 @@ public class DataBase
 		return nombre;
 
 
-	}	
+	}
 
 	public int getBonneReponse( int id_img,int champ)
 	{
+		System.out.println("id_image = "+id_img+" champ"+champ);
+		String col = "champ"+champ;
+		System.out.println("**"+col+"**");
+
 		PreparedStatement req=null;
 		int nombre=-1;
 		try
 		{
-			req=connexion.prepareStatement( "select ? as m from image where id=?");
-			req.setString(1,"champ"+champ);
-			req.setInt(2,id_img);
+			req=connexion.prepareStatement( "select "+col+" as m from image where id=?");
+			req.setInt(1,id_img);
+
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
-	    		nombre=resultat.getInt("m");
+			System.out.println("cloche");
+
+	    	nombre=resultat.getInt("m");
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur getBonneReponse");}
 		return nombre;
 
 	}
