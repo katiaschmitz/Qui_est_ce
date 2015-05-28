@@ -66,7 +66,8 @@ import javax.swing.JTextField;
 		private JButton validerChat=new JButton("envoyer") ;
 		private JButton proposition=new JButton("Proposition") ;
 		private JTextField saisieChat = new JTextField();
-		private JTextArea texteChat = new JTextArea("");
+	//	private ZoneTexte texteChat = new ZoneTexte((new ImageIcon("orange.jpg").getImage()));
+		private JTextArea texteChat = new JTextArea();
 		private JScrollPane scroll = new JScrollPane(texteChat);
 		
 		/*************** Mini Panel********************/
@@ -188,6 +189,7 @@ import javax.swing.JTextField;
 							  boutonAux.setContentAreaFilled(false);
 							  boutonAux.setPressedIcon(new ImageIcon("j"+i+"_"+i+".png"));
 							  boutonAux.setSelectedIcon(new ImageIcon("Click.png"));
+							  boutonAux.setBorder(null);
 							//  boutonAux.setSize(30, 30);
 							 // boutonAux.addActionListener(this);
 							  boutonPersonnage.add(boutonAux);
@@ -226,6 +228,7 @@ import javax.swing.JTextField;
 							  boutonAux =new JButton(new ImageIcon(buttonIcon3));
 							  boutonAux.setBorder(BorderFactory.createEmptyBorder());
 							  boutonAux.setContentAreaFilled(false);
+							  boutonAux.setBorder(null);
 							  //boutonAux.setSelectedIcon(new ImageIcon("Click.png"));
 							 // boutonAux.addActionListener(this);
 							  boutonPersonnageAdv.add(boutonAux);
@@ -257,10 +260,14 @@ import javax.swing.JTextField;
 			
 			/********Zone d'affichage*********/
 			//texteChat.setForeground(new Color(0,0,0,65));
-			texteChat.setBounds(50, 30, 90, 40);
+		//	texteChat.setBounds(50, 30, 90, 40);
 			texteChat.setOpaque(false);
+			texteChat.setBorder(null); 
+			scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 			//texteChat.setForeground(Color.WHITE);
 			scroll.setOpaque(false);
+			scroll.getViewport().setOpaque(false);
+			scroll.setBorder(null);
 			//scroll.setForeground(Color.WHITE);
 			
             scroll.setPreferredSize(new Dimension(200, 100));
@@ -271,15 +278,18 @@ import javax.swing.JTextField;
             //gc.gridwidth = 2;
             //gc.gridheight = 2;
             //gc.weighty = 50;
+            
             gc.anchor = GridBagConstraints.BASELINE;
             gc.fill = GridBagConstraints.VERTICAL;
             PanelPerso.add(scroll,gc);	
+        
             
 			/******** Zone de saisie **********/
 			//saisieChat.setBorder(null);
 		    saisieChat.setPreferredSize(new Dimension(200, 15));
 			saisieChat.setMinimumSize(new Dimension(200, 15));
-			saisieChat.setOpaque(false);
+			//saisieChat.setOpaque(false);
+			saisieChat.setBackground(Color.black);
 			saisieChat.setForeground(Color.WHITE);
 			saisieChat.setBounds(0, 0, 0, 0);
 			gc2.gridx = 0;
@@ -382,6 +392,7 @@ import javax.swing.JTextField;
 		 	 texteChat.setText(message);
 		 	  this.validate();
 		  }
+	
 		
 	}
 			
