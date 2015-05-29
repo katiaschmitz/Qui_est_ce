@@ -127,7 +127,7 @@ public class AnalyseurServeur
 			}
 			else if(demande.equals("8"))// pour mettre a jour le nombre de cases baissées
 			{
-				th.nbCaseBaissee(infos[1]);
+				th.nbCaseBaissee(infos);
 			}
 			else if(demande.equals("10"))// proposer une reponse
 			{
@@ -160,6 +160,10 @@ public class AnalyseurServeur
 			else if(demande.equals("33"))// envoyer la liste de question automatique
 			{
 				th.envoiQuestion();
+			}
+			else if(demande.equals("34"))
+			{
+				th.choisirMode(infos[1]);
 			}
 			/*remise à zero des informations*/
 			recu="";

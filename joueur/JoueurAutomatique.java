@@ -32,7 +32,7 @@ public class JoueurAutomatique implements Runnable{
 	{
 
 		try{
-			socket = new Socket("10.11.80.1",2019);
+			socket = new Socket("10.11.66.8",2020);
 			out = new PrintWriter(socket.getOutputStream());
 	        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	        System.out.println("Connecter");

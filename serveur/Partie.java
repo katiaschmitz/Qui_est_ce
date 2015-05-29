@@ -22,9 +22,10 @@ public class Partie
 	private String joueur2;
 	private int choixJoueur1;/*entre 1 et 20*/
 	private int choixJoueur2;
-	private int nbCaseBaissee1;
-	private int nbCaseBaissee2;
+	//private int nbCaseBaissee1;
+	//private int nbCaseBaissee2;
 	private int images[];/* supplementaire*/
+	private String mode;
 
 /*******************************************************/
 /***          CONSTRUCTEUR, GET, SET                 ***/
@@ -44,9 +45,22 @@ public class Partie
 		images=new int[24];
 		joueur1=pseudo1;
 		joueur2=pseudo2;
-		nbCaseBaissee1=0;
-		nbCaseBaissee2=0;
+		//nbCaseBaissee1=0;
+		//nbCaseBaissee2=0;
+		mode = "s";
 
+	}
+
+
+
+	public void setMode(String mode)
+	{
+		this.mode = mode;
+	}
+
+	public String getMode()
+	{
+		return mode;	
 	}
 
 	/**
@@ -55,7 +69,7 @@ public class Partie
 	 * @param pseudo pseudo du joueur
 	 * @return nombre de cases baissées du joueur
 	 */
-	public int getNbCaseBaissee(String pseudo)
+	/*public int getNbCaseBaissee(String pseudo)
 	{
 		//COMPILATION
 		System.out.println("debut méthodePartie getNbCaseBaissee: "+pseudo);
@@ -63,7 +77,7 @@ public class Partie
 			return nbCaseBaissee1;
 		else
 			return nbCaseBaissee2;
-	}
+	}*/
 
 	/**
 	 *  Initialise le choix de l'image du joueur
@@ -179,7 +193,7 @@ public class Partie
 	 * @param pseudo pseudo du joueur
 	 * @param nb nombre a ajouter
 	 */
-	public void ajouterCase(String pseudo,int nb)
+	/*public void ajouterCase(String pseudo,int nb)
 	{
 		//COMPILATION
 		System.out.println("debut méthodePartie ajouterCase: "+pseudo+" "+ nb);
@@ -187,7 +201,7 @@ public class Partie
 			nbCaseBaissee1= nbCaseBaissee1+nb;
 		else
 			nbCaseBaissee2 = nbCaseBaissee2+nb;
-	}
+	}*/
 
 	/**
 	 *  Cette fonction est appelée par un Serveur.

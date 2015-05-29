@@ -292,13 +292,17 @@ public class ThreadJoueur implements Runnable
 	 *
 	 *  @param nb nombre de cases baissees par le joueur.
 	 */
-	public void nbCaseBaissee(String nb)
+	public void nbCaseBaissee(String[] nb)
 	{
 		//COMPILATION
 		System.out.println("debut méthodeThreadjoueur nbCaseBaissee: "+nb);
 		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération Threadjoueur de l'adversaire
-		int nouv_nb = serveur.augmenterCaseBaissee(this.partie,this.pseudo,Integer.parseInt(nb));
-		adv.envoiMessageJoueur("9:"+ nouv_nb );
+		//int nouv_nb = serveur.augmenterCaseBaissee(this.partie,this.pseudo,Integer.parseInt(nb));
+		String nouv_nb = "";
+		for(int i=1;i<nb.length;++i)
+		nouv_nb = nouv_nb+":"+ nb[i];
+
+		adv.envoiMessageJoueur("9"+ nouv_nb );
 	}
 
 	/**
@@ -337,7 +341,7 @@ public class ThreadJoueur implements Runnable
 		else
 		{
 				envoiMessageJoueur("20");
-				adv.envoiMessageJoueur("9:0" );
+				adv.envoiMessageJoueur("9:" );
 
 		}
 	}
@@ -373,8 +377,9 @@ public class ThreadJoueur implements Runnable
 		byte[] z = new byte[256];
 		int[] c = new int[256];
 		int x;
+		String m = serveur.getModePartie(this.partie);
 		FileInputStream fichiers = null;
-		try{fichiers=new FileInputStream("s"+i+".jpg");}
+		try{fichiers=new FileInputStream(m+i+".jpg");}
 			catch(FileNotFoundException e){System.out.println("erreur ouverture fichier");}
 
 		try{x=fichiers.read(z);
@@ -460,7 +465,6 @@ public class ThreadJoueur implements Runnable
 		System.out.println("debut methode threadjoueur : creationJoueurAuto "+pseudo);
 		/*********************/
 		this.pseudo = pseudo;
-		envoiMessageJoueur("30:"+serveur.recupereNbQuestion());
 	}
 
 	/**
@@ -476,20 +480,13 @@ public class ThreadJoueur implements Runnable
 
 		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
 
-		/*recupere une chaine de caracteres contenant le nombre de personnage à baiser suivi de ces personnages( indice de la 			table de jeu*/
+		/*n	 une chaine de caracteres contenant le nombre de personnage à baiser suivi de ces personnages( indice de la 			table de jeu*/
 		String tmp = serveur.recupererReponseQuestion(this.partie,this.pseudo,Integer.parseInt(num_question));
-		String[] infos = tmp.split(":");
 
-		String nb = infos[0];
-		String img = "";
+		
 
-		for(int i=1; i<infos.length; ++i)
-		{
-			img = img + ":" + infos[i];
-		}
-
-		this.envoiMessageJoueur("32"+ img);// envoi des images a baissée au joueur
-		adv.envoiMessageJoueur("9:"+ nb);// envoi nb case baissée à l adver
+		this.envoiMessageJoueur("32"+ tmp);// envoi des images a baissée au joueur
+		adv.envoiMessageJoueur("9"+ tmp);// envoi nb case baissée à l adver
 	}
 
 	/**
@@ -498,8 +495,19 @@ public class ThreadJoueur implements Runnable
 	 */
 	public void envoiQuestion()
 	{
-		envoiMessageJoueur("33"+serveur.listeQuestion());
+		String m = serveur.getModePartie(this.partie);
+		envoiMessageJoueur("33"+serveur.listeQuestion(m));
 	}
+
+/**************************ajout mode*********************************/
+
+	public void choisirMode(String mode)
+	{
+		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
+		serveur.choisirModePartie(mode,this.partie);
+		adv.envoiMessageJoueur("30:"+serveur.recupereNbQuestion(mode));
+	}
+
 
 }
 

@@ -42,7 +42,7 @@ public class Serveur
 		try{
 			System.out.println("entree dans la boucle1 ");
 
-		socket_serveur = new ServerSocket(2019);
+		socket_serveur = new ServerSocket(2020);
 		System.out.println("entree dans la boucle2 ");
 
 		bdd = new DataBase();
@@ -312,13 +312,13 @@ public class Serveur
 	 *  @param nb nombre de case baissée supplementaire
 	 *  @return nombre de case baissée au totale du joueur spécifié
 	 */
-	public int augmenterCaseBaissee(Partie p,String joueur,int nb)
+	/*public int augmenterCaseBaissee(Partie p,String joueur,int nb)
 	{
 		//COMPILATION
 		System.out.println("debut méthodeServeur augmenterCAaseBaissee: "+joueur+" "+ nb);
 		p.ajouterCase(joueur,nb);
 		return p.getNbCaseBaissee(joueur);
-	}
+	}*/
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
@@ -409,9 +409,9 @@ public class Serveur
 		 *  Cette fonction est appelée par un ThreadJoueur.
 		 *  Elle demande à la base de données le nombre de questions disponibles
 		 */
-		public int recupereNbQuestion()
+		public int recupereNbQuestion(String mode)
 		{
-			return bdd.getNombreQuestion();
+			return bdd.getNombreQuestion(mode);
 		}
 
 		/**
@@ -429,14 +429,16 @@ public class Serveur
 			int[] tmp = p.getTabImages();// récupération des images de la partie
 
 			int nb = 0;
+
 			String img = "";
+			String m = p.getMode();
 			System.out.println("/**************verification question***************/");
 			System.out.println("num question"+ question);
 			int id_image = p.getChoixAdversaire(pseudo);// récuperation de l'image de l'adversaire
 			System.out.println("image du joueur(indice)"+id_image);
-			int[] num_champs = bdd.getChampReponse(question);// recupération du champs réponse correspondant à la question
+			int[] num_champs = bdd.getChampReponse(question,m);// recupération du champs réponse correspondant à la question
 			System.out.println("numero du champs"+num_champs[0]+" valeur du champs pour la question"+num_champs[1]);
-			int val_img = bdd.getBonneReponse(tmp[id_image],num_champs[0]);// récupération de la réponse
+			int val_img = bdd.getBonneReponse(tmp[id_image],num_champs[0],m);// récupération de la réponse
 			System.out.println("numero image adversaire"+tmp[id_image]);
 			System.out.println("valeur image adversaire"+ val_img);
 			boolean val_ref;
@@ -452,21 +454,37 @@ public class Serveur
 			/*verifier avec les images de la partie les reponse au question*/
 			for( int i =0; i < tmp.length; i++)
 			{
-				if( bdd.verifierImage( tmp[i], num_champs[0],num_champs[1],val_ref))
+				if( bdd.verifierImage( tmp[i], num_champs[0],num_champs[1],val_ref,m))
 				{
 					System.out.println("image ok "+ i);
-					nb = nb +1;
 					img = img + ":" + i ;
 				}
 
 			}
 
-			return nb + img ;//le nb de case baissées et les indices des cases baissées
+			return img ;//le nb de case baissées et les indices des cases baissées
 		}
 
-		public String listeQuestion()
+		public String listeQuestion(String mode)
 		{
-			return bdd.listeQuestion();
+			return bdd.listeQuestion(mode);
 		}
+
+
+/***********************ajout mode *******************************/
+
+	public void choisirModePartie(String mode, Partie p)
+	{
+		p.setMode(mode);
+	}
+
+
+	public String getModePartie(Partie p)
+	{
+		return p.getMode();
+	}
+
+
+
 
 	}

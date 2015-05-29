@@ -28,7 +28,7 @@ public class Joueur implements ActionListener  {
 		try{
 		etat=0;
 		nbAuto=0;
-		socket = new Socket("10.11.80.1",2019);
+		socket = new Socket("10.11.66.8",2020);
 		out = new PrintWriter(socket.getOutputStream());
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    System.out.println("Connecter");
@@ -83,6 +83,7 @@ public class Joueur implements ActionListener  {
 			boolean rep = fenetre.AfficherBoiteDialogue(info[1]);
 			if (rep == true){
 				envoiMessageServeur("5:1");
+
 				receptionImage();
 				fenetre.lancerPartie();
 			}
@@ -97,7 +98,8 @@ public class Joueur implements ActionListener  {
 		}
 
 		if (info[0].equals("6")&& info[1].equals("1")){
-		 	receptionImage();
+		 	envoiMessageServeur("34:s");
+			receptionImage();
 			fenetre.lancerPartie();
 			if(fenetre.auto)
 				envoiMessageServeur("33");

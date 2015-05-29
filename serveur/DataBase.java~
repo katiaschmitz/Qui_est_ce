@@ -4,7 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
-
+/****export CLASSPATH=.:~/final/qui_est_ce/serveur/jdbc.jar
+ ****/
 
 /**
  * Classe DataBase est un module dans le cadre du jeu du Qui_Est_Ce projet de licence informatique 3ème année
@@ -449,7 +450,7 @@ public class DataBase
 
 /***************************************ajout*********************************/
 
-	public String listeQuestion()
+	public String listeQuestion(String mode)
 	{
 		PreparedStatement req=null;
 		int i;
@@ -462,7 +463,7 @@ public class DataBase
 		{
 			for(i=0;i<recupererNombre();i++)
 			{
-			req=connexion.prepareStatement( "select q from question");
+			req=connexion.prepareStatement( "select q from question_"+mode);
 			ResultSet resultat = req.executeQuery();
 			while ( resultat.next())
 			{
@@ -481,13 +482,13 @@ public class DataBase
 	}
 
 
-	public int[] getChampReponse( int id_question )
+	public int[] getChampReponse( int id_question, String mode )
 	{
 		PreparedStatement req=null;
 		int[] nombre= {-1,-1} ;
 		try
 		{
-			req=connexion.prepareStatement( "select r,ref  from question where id = ?");
+			req=connexion.prepareStatement( "select r,ref  from question_"+mode+" where id = ?");
 			req.setInt(1,id_question);
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
@@ -501,7 +502,7 @@ public class DataBase
 	}
 
 
-	public boolean verifierImage(int id_image, int num_champs,int br, boolean correct)
+	public boolean verifierImage(int id_image, int num_champs,int br, boolean correct,String m)
 	{
 		PreparedStatement req=null;
 		boolean x = false;
@@ -512,7 +513,7 @@ public class DataBase
 		{
 			try
 			{
-				req=connexion.prepareStatement( "select "+ch+" as rep from image where id=?");
+				req=connexion.prepareStatement( "select "+ch+" as rep from image_"+m+" where id=?");
 				req.setInt(1,id_image);
 				ResultSet resultat = req.executeQuery();
 				resultat.next();
@@ -529,7 +530,7 @@ public class DataBase
 		{
 			try
 			{
-				req=connexion.prepareStatement( "select "+ch+" as rep from image where id=?");
+				req=connexion.prepareStatement( "select "+ch+" as rep from image_"+m+" where id=?");
 				req.setInt(1,id_image);
 				ResultSet resultat = req.executeQuery();
 				resultat.next();
@@ -545,14 +546,14 @@ public class DataBase
 		return x;
 	}
 
-	public int getNombreQuestion()
+	public int getNombreQuestion(String mode)
 	{
 
 		PreparedStatement req=null;
 		int nombre=-1;
 		try
 		{
-			req=connexion.prepareStatement( "select count(*) as n from question");
+			req=connexion.prepareStatement( "select count(*) as n from question_"+mode);
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
 	    		nombre=resultat.getInt("n");
@@ -563,7 +564,7 @@ public class DataBase
 
 	}
 
-	public int getBonneReponse( int id_img,int champ)
+	public int getBonneReponse( int id_img,int champ,String m)
 	{
 		System.out.println("id_image = "+id_img+" champ"+champ);
 		String col = "champ"+champ;
@@ -573,7 +574,7 @@ public class DataBase
 		int nombre=-1;
 		try
 		{
-			req=connexion.prepareStatement( "select "+col+" as m from image where id=?");
+			req=connexion.prepareStatement( "select "+col+" as m from image_"+m+" where id=?");
 			req.setInt(1,id_img);
 
 			ResultSet resultat = req.executeQuery();
