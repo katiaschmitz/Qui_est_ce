@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
-
+/**** export CLASSPATH=.:/usr/local/nz/lib/nzjdbc3.jar ****/
 
 /**
  * Classe DataBase est un module dans le cadre du jeu du Qui_Est_Ce projet de licence informatique 3ème année
