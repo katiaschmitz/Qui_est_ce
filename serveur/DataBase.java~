@@ -128,7 +128,7 @@ public class DataBase
 			req=connexion.prepareStatement( "Select count(*) as n from qui_est_ce where pseudo=?");
 			req.setString( 1, pseudo );
 			ResultSet resultat = req.executeQuery();
-		    resultat.next();
+		   	resultat.next();
 			reponse=resultat.getInt("n");
 			System.out.println("reponse = "+reponse);
 
@@ -145,24 +145,17 @@ public class DataBase
 					inscrip.setString(2,password);
 					inscrip.setInt(3,indice);
 					int res = inscrip.executeUpdate();
-					if(res==1)
-					{
-						x=true;
-						arrangerClassement(pseudo);
+					x=true;
+					arrangerClassement(pseudo);
 
-					}
+				
 				}
-				catch(SQLException ex){	ex.printStackTrace();}
-
-
+				catch(SQLException ex){	ex.printStackTrace();System.out.println("erreur inscription 1ere requete");}
 			}
 
 		}
-		catch(SQLException ex){ex.printStackTrace();}
-		//System.out.println(x);
-		System.out.println("fin inscription");
-
-		System.out.println("DataBase:inscription debut methode "+x);
+		catch(SQLException ex){ex.printStackTrace();System.out.println("erreur inscription 2eme requete ");}
+		System.out.println("DataBase: fin inscription");
 
 		return x;
 
@@ -224,6 +217,7 @@ public class DataBase
 	public void majScore(String pseudo,boolean gagne)
 	{
 		PreparedStatement req=null;
+		int nombre=-1;
 		try
 		{
 			if(gagne)
@@ -231,8 +225,8 @@ public class DataBase
 				req=connexion.prepareStatement( "select gagne from qui_est_ce where pseudo=?");
 				req.setString( 1, pseudo );
 				ResultSet resultat = req.executeQuery();
-		    	resultat.next();
-				int nombre=resultat.getInt("gagne");
+		    		resultat.next();
+				nombre=resultat.getInt("gagne");
 				nombre++;
 				req=connexion.prepareStatement( "update qui_est_ce set gagne=? where pseudo=?");
 				req.setInt(1 , nombre );
@@ -247,8 +241,8 @@ public class DataBase
 				req=connexion.prepareStatement( "select perdu from qui_est_ce where pseudo=?");
 				req.setString( 1, pseudo );
 				ResultSet resultat = req.executeQuery();
-		    	resultat.next();
-				int nombre=resultat.getInt("perdu");
+		    		resultat.next();
+				nombre=resultat.getInt("perdu");
 				nombre++;
 				req=connexion.prepareStatement( "update qui_est_ce set perdu=? where pseudo=?");
 				req.setInt(1 , nombre );
@@ -304,48 +298,104 @@ public class DataBase
 		boolean x=false;
 		try
 		{
-				req=connexion.prepareStatement( "select rang,(gagne-perdu) as dif from qui_est_ce where pseudo=?");
-				req.setString( 1, pseudo );
-				ResultSet resultat = req.executeQuery();
+			req=connexion.prepareStatement( "select rang,(gagne-perdu) as dif from qui_est_ce where pseudo=?");
+			req.setString( 1, pseudo );
+			ResultSet resultat = req.executeQuery();
 	    		resultat.next();
 	    		dif=resultat.getInt("dif");
 	    		indice=resultat.getInt("rang");
 	    		System.out.println("difference = "+dif);
+	    		System.out.println("indice = "+indice);
 
 		}
 		catch(SQLException ex){}
-		System.out.println("taille"+recupererNombre());
-
-		int taille=recupererNombre();
-		System.out.println("taille * = "+dif);
-
+		decalerHaut(indice,pseudo);
+		int taille=recupererNombre()-1;
 		int[] tab=new int[taille];
 		remplirTableau(tab,pseudo);
 		for(i=0;i<taille && x==false ;i++)
 		{
-			//System.out.println("tab[ "+i+"]= "+tab[i]);
-
 			if(dif>tab[i])
 			{
 				x=true;
-				setRang(pseudo,indice,i);
-			}
-			else if(dif==tab[i])
-			{
-				x=true;
-				setRang(pseudo,indice,i);
+				setRang(pseudo,i);
+				decalerBas(i+1);					
 			}
 		}
+		
+		/*System.out.println("taille"+recupererNombre());
+		int taille=recupererNombre();
+		int[] tab=new int[taille];
+		remplirTableau(tab,pseudo);
+		for(i=0;i<tab.length;i++)
+	    		System.out.println("tab["+i+"] = "+tab[i]);
+
+		for(i=0;i<taille && x==false ;i++)
+		{
+			
+				if(dif>tab[i])
+				{
+					x=true;
+					setRang(pseudo,indice,i);
+					
+
+				}
+
+			
+		}
+		if(x==false)
+			setRang(pseudo,indice,i-1);		
+		System.out.println("x = true a i = "+i);*/
 
 	}
 
 
-	public void setRang(String pseudo,int indice,int i)
-	{
-		System.out.println("debut "+indice+" fin "+i);
 
-		if(i!=indice)
+	public void decalerHaut(int i,String pseudo)
+	{
+		
+		PreparedStatement req=null;
+		try
 		{
+				
+				req=connexion.prepareStatement( "update qui_est_ce set rang=rang-1 where rang>?");
+				req.setInt( 1, i );
+				req.executeUpdate();
+		}
+		catch(SQLException ex){}
+		try
+		{
+				
+				req=connexion.prepareStatement( "update qui_est_ce set rang=-1 where pseudo=?");
+				req.setString( 1, pseudo );
+				req.executeUpdate();
+		}
+		catch(SQLException ex){}
+
+	}
+
+	public void decalerBas(int i,String pseudo)
+	{
+		
+		PreparedStatement req=null;
+		try
+		{
+				
+				req=connexion.prepareStatement( "update qui_est_ce set rang=rang+1 where rang>?");
+				req.setInt( 1, i );
+				req.executeUpdate();
+		}
+		catch(SQLException ex){}
+	}
+
+
+
+
+	public void setRang(String pseudo,int i)
+	{
+
+
+	
 		PreparedStatement req=null;
 		try
 		{
@@ -355,13 +405,6 @@ public class DataBase
 				req.executeUpdate();
 		}
 		catch(SQLException ex){}
-
-		if(i>indice)
-		 	decalerScore(indice,i,pseudo,0);
-		 else
-		 	decalerScore(indice,i,pseudo,1);
-		}
-
 
 	}
 
@@ -400,20 +443,22 @@ public class DataBase
 	public void remplirTableau(int[] tab,String pseudo)
 	{
 		PreparedStatement req=null;
+		int i;
 		try
 		{
-				for(int i=0;i<tab.length;i++)
-				{
-				req=connexion.prepareStatement( "select (gagne-perdu) as dif from qui_est_ce where rang=? and pseudo<>?");
-				req.setInt(1,i);
-				req.setString(2, pseudo);
+			req=connexion.prepareStatement( "select rang,(gagne-perdu) as dif from qui_est_ce and pseudo<>?");
+			req.setString( 1,pseudo);
+			ResultSet resultat = req.executeQuery();
+			for(i=0;i<tab.length;i++)
+			{
 
-				ResultSet resultat = req.executeQuery();
 				resultat.next();
-				tab[i]=resultat.getInt("dif");
-				}
+				tab[resultat.getInt("rang")]=resultat.getInt("dif");
+				
+				
+			}
 		}
-				catch(SQLException ex){}
+		catch(SQLException ex){}
 
 	}
 
@@ -588,13 +633,100 @@ public class DataBase
 		return nombre;
 
 	}
-	public int getNbImages(String x)
+	public int getNbImages(String mode)
 	{
+		PreparedStatement req=null;
+		int nombre=-1;
+		try
+		{
+			req=connexion.prepareStatement( "select count(*) as n from image_"+mode);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+	    		nombre=resultat.getInt("n");
+		}
+		catch(SQLException ex){System.out.println("erreur getNbImages");}
+		return nombre;
+	}
 
+	public boolean ajouterFavoris(String personne,String fav)
+	{
+		PreparedStatement req=null;
+		int nombre =-1;
+		boolean x=false;
+		try
+		{
+
+			req=connexion.prepareStatement( "select count(*) as n from favoris where personne=? and fav=?");
+			req.setString(1,personne);
+			req.setString(2,fav);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+		    	nombre=resultat.getInt("n");
+			if(nombre==0)
+			{
+	
+				try
+				{
+					req=connexion.prepareStatement( "insert into favoris values(?,?)");
+					req.setString(1,personne);
+					req.setString(2,fav);
+					req.executeUpdate();
+					x = true;
+	
+				}
+				catch(SQLException ex){System.out.println("erreur ajouterFavoris 1ere requete");}
+			}
+			else
+			{
+				x = false;
+			}
+		}
+		catch(SQLException ex){System.out.println("erreur ajouterFavoris 2eme requete");}
+		return x;
 	}
 
 
+	public boolean supprimerFavoris(String personne,String fav)
+	{
+		PreparedStatement req=null;
+		int nombre =-1;
+		boolean x=false;
+		try
+		{
+
+			req=connexion.prepareStatement( "select count(*) as n from favoris where personne=? and fav=?");
+			req.setString(1,personne);
+			req.setString(2,fav);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+		    	nombre=resultat.getInt("n");
+			if(nombre==1)
+			{
+	
+				try
+				{
+					req=connexion.prepareStatement( "delete from favoris where personne=? and fav=?");
+					req.setString(1,personne);
+					req.setString(2,fav);
+					req.executeUpdate();
+					x = true;
+	
+				}
+				catch(SQLException ex){System.out.println("erreur supprimerFavoris 1ere requete");}
+			}
+			else
+			{
+				x = false;
+			}
+		}
+		catch(SQLException ex){System.out.println("erreur supprimerFavoris 2eme requete");}
+		return x;
+	}
+
+
+
 }
+
 
 
 

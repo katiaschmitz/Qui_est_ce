@@ -165,6 +165,10 @@ public class AnalyseurServeur
 			{
 				th.choisirMode(infos[1]);
 			}
+			else if(demande.equals("35"))
+			{
+				/*envoyer listes mode*/
+			}
 			/*remise à zero des informations*/
 			recu="";
 			for(int i=0;i<infos.length;i++)

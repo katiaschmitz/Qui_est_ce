@@ -108,10 +108,12 @@ public class Serveur
 		System.out.println("***************** ");
 
 		Serveur x = new Serveur();
+		
+		/*x.bdd.majScore("omar",true);
+		x.bdd.majScore("omar",true);*/
+		/*x.bdd.inscription("julien","hin");
+		x.bdd.inscription("omar","hin");
 
-
-		/*x.bdd.inscription("omar","hin");
-		x.bdd.inscription("julien","hin");
 		x.bdd.inscription("fred","hin");
 
 		x.bdd.majScore("omar",true);

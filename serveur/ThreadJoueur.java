@@ -96,6 +96,11 @@ public class ThreadJoueur implements Runnable
 		return in;
 	}
 
+	public PrintWriter getOutput()
+	{	
+		return out;
+	}
+
 /*******************************************************/
 /***             FONCTIONS PRINCIPALES               ***/
 /*******************************************************/
@@ -256,6 +261,7 @@ public class ThreadJoueur implements Runnable
 			ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération du Threadjoueur de l'adversaire
 			if(reponse.equals("1"))
 			{
+				adv.envoiMessageJoueur("35:simpson:disney:s");
 				adv.envoiMessageJoueur("6:1");// l adversaire doit lancer la partie
 				/*enregistrer numéro image*/
 				serveur.chargerImagePartie(this.partie);
@@ -371,6 +377,7 @@ public class ThreadJoueur implements Runnable
 	{
 		//COMPILATION
 		//System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
+		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
 		int num_image = Integer.parseInt(image);
 		int i = serveur.recupererImagePartie(num_image,this.partie)  ;// recuperer le numero de l image a envoyer
 		Byte[] b = new Byte[256];
@@ -390,12 +397,15 @@ public class ThreadJoueur implements Runnable
 				b[j]=z[j];
 				c[j]=b[j].intValue();
 				out.write(c[j]);
+				adv.getOutput().write(c[j]);
 			}
 			x=fichiers.read(z);
 		}
 		x=64000;
 		out.write(x);
-		out.flush();}
+		adv.getOutput().write(x);
+		out.flush();
+		adv.getOutput().flush();}
 		catch(IOException e){System.out.println("erreur envoi image");}
 	}
 
