@@ -313,16 +313,21 @@ public class DataBase
 		int taille=recupererNombre()-1;
 		int[] tab=new int[taille];
 		remplirTableau(tab,pseudo);
+		for(i=0;i<tab.length;i++)
+	    		System.out.println("tab["+i+"] = "+tab[i]);
 		for(i=0;i<taille && x==false ;i++)
 		{
 			if(dif>tab[i])
 			{
 				x=true;
-				setRang(pseudo,i);
-				decalerBas(i+1);					
+				decalerBas(i);	
+				setRang(pseudo,i);				
 			}
 		}
-		
+		if(x==false)
+		{
+			setRang(pseudo,i);				
+		}
 		/*System.out.println("taille"+recupererNombre());
 		int taille=recupererNombre();
 		int[] tab=new int[taille];
@@ -381,7 +386,7 @@ public class DataBase
 		try
 		{
 				
-				req=connexion.prepareStatement( "update qui_est_ce set rang=rang+1 where rang>?");
+				req=connexion.prepareStatement( "update qui_est_ce set rang=rang+1 where rang>=?");
 				req.setInt( 1, i );
 				req.executeUpdate();
 		}
@@ -446,7 +451,7 @@ public class DataBase
 		int i;
 		try
 		{
-			req=connexion.prepareStatement( "select rang,(gagne-perdu) as dif from qui_est_ce and pseudo<>?");
+			req=connexion.prepareStatement( "select rang,(gagne-perdu) as dif from qui_est_ce where pseudo<>?");
 			req.setString( 1,pseudo);
 			ResultSet resultat = req.executeQuery();
 			for(i=0;i<tab.length;i++)
