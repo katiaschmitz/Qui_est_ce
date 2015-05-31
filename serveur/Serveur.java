@@ -346,7 +346,10 @@ public class Serveur
 	{
 		//COMPILATION
 		System.out.println("debut méthodeServeur chargerIMagePartie: ");
-		p.initialiseImagePartie();
+		String mode = p.getMode();
+		int nb = bdd.getNbImages(mode);
+		
+		p.initialiseImagePartie(nb);
 	}
 
 	/**
@@ -487,4 +490,15 @@ public class Serveur
 
 
 
-	}
+}
+
+
+
+
+
+
+
+
+
+
+

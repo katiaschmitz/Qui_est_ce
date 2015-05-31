@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
 /****export CLASSPATH=.:~/final/qui_est_ce/serveur/jdbc.jar
+mysql -h  mysql-thetourist.alwaysdata.net thetourist_quiestce -u 107510_3 -p  root
  ****/
 
 /**
@@ -586,6 +587,20 @@ public class DataBase
 		catch(SQLException ex){System.out.println("erreur getBonneReponse");}
 		return nombre;
 
+	}
+	public int getNbImages(String mode)
+	{
+		PreparedStatement req=null;
+		int nombre=-1;
+		try
+		{
+			req=connexion.prepareStatement( "select count(*) as n from image_"+mode);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+	    		nombre=resultat.getInt("n");
+		}
+		catch(SQLException ex){}
+		return nombre;
 	}
 
 

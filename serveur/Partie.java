@@ -207,7 +207,7 @@ public class Partie
 	 *  Cette fonction est appelée par un Serveur.
 	 *  Choisit au hasard 24 numéro d'image compris entre 0 et 19
 	 */
-	public void initialiseImagePartie()
+	public void initialiseImagePartie(int nb)
 	{
 		//COMPILATION
 		System.out.println("debut méthodePartie initialiseImagePartie: ");
@@ -219,7 +219,7 @@ public class Partie
 		for(int i=0; i<24;++i)
 		{
 			rand = new Random();
-			images[i]=tab.get(rand.nextInt(24-i));
+			images[i]=tab.get(rand.nextInt(nb-i));
 			tab.remove((Integer)images[i]);
 		}
 	}

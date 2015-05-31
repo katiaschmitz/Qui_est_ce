@@ -346,7 +346,10 @@ public class Serveur
 	{
 		//COMPILATION
 		System.out.println("debut méthodeServeur chargerIMagePartie: ");
-		p.initialiseImagePartie();
+		String mode = p.getMode();
+		int nb = bdd.getNbImages(mode);
+		
+		p.initialiseImagePartie(nb);
 	}
 
 	/**
@@ -438,7 +441,7 @@ public class Serveur
 			System.out.println("image du joueur(indice)"+id_image);
 			int[] num_champs = bdd.getChampReponse(question,m);// recupération du champs réponse correspondant à la question
 			System.out.println("numero du champs"+num_champs[0]+" valeur du champs pour la question"+num_champs[1]);
-			int val_img = bdd.getBonneReponse(tmp[id_image],num_champs[0]);// récupération de la réponse
+			int val_img = bdd.getBonneReponse(tmp[id_image],num_champs[0],m);// récupération de la réponse
 			System.out.println("numero image adversaire"+tmp[id_image]);
 			System.out.println("valeur image adversaire"+ val_img);
 			boolean val_ref;
@@ -454,7 +457,7 @@ public class Serveur
 			/*verifier avec les images de la partie les reponse au question*/
 			for( int i =0; i < tmp.length; i++)
 			{
-				if( bdd.verifierImage( tmp[i], num_champs[0],num_champs[1],val_ref))
+				if( bdd.verifierImage( tmp[i], num_champs[0],num_champs[1],val_ref,m))
 				{
 					System.out.println("image ok "+ i);
 					img = img + ":" + i ;
