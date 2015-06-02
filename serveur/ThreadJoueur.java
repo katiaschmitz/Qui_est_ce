@@ -518,6 +518,13 @@ public class ThreadJoueur implements Runnable
 		adv.envoiMessageJoueur("30:"+serveur.recupereNbQuestion(mode));
 	}
 
+	public void listeFavoris(String pseudo)
+	{
+		String reponse="";
+		reponse = serveur.listeFavoris(pseudo);
+		envoiMessageJoueur("36"+reponse);
+	}
+
 
 }
 

@@ -768,12 +768,12 @@ public class DataBase
 		try
 		{
 			
-			req=connexion.prepareStatement( "select fav from favoris where personne=?");
+			req=connexion.prepareStatement( "select fav,connecte from favoris,qui_est_ce where fav=pseudo and personne=?");
 			req.setString(1,personne);
 			ResultSet resultat = req.executeQuery();
 			while ( resultat.next())
 			{
-				reponse=reponse+":"+resultat.getString("fav");
+				reponse=reponse+":"+resultat.getString("fav")+"-"+resultat.getInt("connecte");
 			}
 
 			ps = resultat.getString("fav");

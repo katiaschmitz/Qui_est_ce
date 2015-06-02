@@ -169,6 +169,10 @@ public class AnalyseurServeur
 			{
 				/*envoyer listes mode*/
 			}
+			else if(demande.equals("36"))
+			{
+				th.listeFavoris(infos[1]); /* demande liste favoris d'un joueur*/
+			}
 			/*remise à zero des informations*/
 			recu="";
 			for(int i=0;i<infos.length;i++)
