@@ -28,7 +28,7 @@ public class Joueur implements ActionListener  {
 		try{
 		etat=0;
 		nbAuto=0;
-		socket = new Socket("10.11.66.8",2020);
+		socket = new Socket("10.11.81.10",2020);
 		out = new PrintWriter(socket.getOutputStream());
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    System.out.println("Connecter");
@@ -98,7 +98,7 @@ public class Joueur implements ActionListener  {
 		}
 
 		if (info[0].equals("6")&& info[1].equals("1")){
-		 	envoiMessageServeur("34:s");
+		 	envoiMessageServeur("34:disney");
 			receptionImage();
 			fenetre.lancerPartie();
 			if(fenetre.auto)
@@ -171,11 +171,13 @@ public class Joueur implements ActionListener  {
 
 	public void lireImage(int im)
     {
-       // System.out.println("numero "+im);
+      
+
+	 // System.out.println("numero "+im);
         byte r;
         int x;
         Integer z;
-        try{FileOutputStream fichier= new FileOutputStream("j"+im+".jpg");
+        try{FileOutputStream fichier= new FileOutputStream("j"+im+".png");
 
         try{x=in.read();
         while(x!=64000)

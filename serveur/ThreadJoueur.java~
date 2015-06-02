@@ -258,7 +258,7 @@ public class ThreadJoueur implements Runnable
 			{
 				adv.envoiMessageJoueur("6:1");// l adversaire doit lancer la partie
 				/*enregistrer numéro image*/
-				serveur.chargerImagePartie(this.partie);
+
 			}
 			else
 			{
@@ -369,7 +369,32 @@ public class ThreadJoueur implements Runnable
 	 */
 	public void envoiImage(String image)
 	{
-		//COMPILATION
+		int num_image = Integer.parseInt(image);
+		int i = serveur.recupererImagePartie(num_image,this.partie)  ;// recuperer le numero de l image a envoyer
+		String m = serveur.getModePartie(this.partie);
+		 
+		try{
+
+		if( num_image == 23 ){
+			 Commun.transfert(
+                new FileInputStream(m+i+".png"),
+                socket_joueur.getOutputStream(),
+                false);
+			out = new PrintWriter(socket_joueur.getOutputStream());
+      			in = new BufferedReader(new InputStreamReader(socket_joueur.getInputStream()));
+		}else{
+		  Commun.transfert(
+                new FileInputStream(m+i+".png"),
+                socket_joueur.getOutputStream(),
+                true);}
+
+		
+
+	
+        }
+		catch(IOException e){System.out.println("erreur envoi image");}
+   
+		/*//COMPILATION
 		//System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
 		int num_image = Integer.parseInt(image);
 		int i = serveur.recupererImagePartie(num_image,this.partie)  ;// recuperer le numero de l image a envoyer
@@ -379,9 +404,10 @@ public class ThreadJoueur implements Runnable
 		int x;
 		String m = serveur.getModePartie(this.partie);
 		FileInputStream fichiers = null;
-		try{fichiers=new FileInputStream(m+i+".jpg");}
+				System.out.println("Image "+m+i);
+		try{fichiers=new FileInputStream(m+i+".png");}
 			catch(FileNotFoundException e){System.out.println("erreur ouverture fichier");}
-
+		
 		try{x=fichiers.read(z);
 		while(x!=-1)
 		{
@@ -396,7 +422,7 @@ public class ThreadJoueur implements Runnable
 		x=64000;
 		out.write(x);
 		out.flush();}
-		catch(IOException e){System.out.println("erreur envoi image");}
+		catch(IOException e){System.out.println("erreur envoi image");}*/
 	}
 
 	/**
@@ -486,7 +512,7 @@ public class ThreadJoueur implements Runnable
 		
 
 		this.envoiMessageJoueur("32"+ tmp);// envoi des images a baissée au joueur
-		adv.envoiMessageJoueur("9:"+ tmp);// envoi nb case baissée à l adver
+		adv.envoiMessageJoueur("9"+ tmp);// envoi nb case baissée à l adver
 	}
 
 	/**
@@ -505,6 +531,7 @@ public class ThreadJoueur implements Runnable
 	{
 		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
 		serveur.choisirModePartie(mode,this.partie);
+		serveur.chargerImagePartie(this.partie);
 		adv.envoiMessageJoueur("30:"+serveur.recupereNbQuestion(mode));
 	}
 

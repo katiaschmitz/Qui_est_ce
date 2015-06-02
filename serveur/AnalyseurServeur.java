@@ -125,9 +125,9 @@ public class AnalyseurServeur
 				th.choisirPerso(infos[1]);
 
 			}
-			else if(demande.equals("8"))// pour mettre a jour le nombre de cases baissées
+			else if(demande.equals("9"))// pour mettre a jour le nombre de cases baissées
 			{
-				th.nbCaseBaissee(infos);
+				th.nbCaseBaissee(recu);
 			}
 			else if(demande.equals("10"))// proposer une reponse
 			{
@@ -164,6 +164,18 @@ public class AnalyseurServeur
 			else if(demande.equals("34"))
 			{
 				th.choisirMode(infos[1]);
+			}
+			else if(demande.equals("35"))
+			{
+				/*envoyer listes mode*/
+			}
+			else if(demande.equals("19"))
+			{
+				th.envoyerImageMode(infos[1]);
+			}
+			else if(demande.equals("40"))
+			{
+				th.quitterPartie();
 			}
 			/*remise à zero des informations*/
 			recu="";

@@ -42,7 +42,7 @@ public class Serveur
 		try{
 			System.out.println("entree dans la boucle1 ");
 
-		socket_serveur = new ServerSocket(2020);
+		socket_serveur = new ServerSocket(2028);
 		System.out.println("entree dans la boucle2 ");
 
 		bdd = new DataBase();
@@ -108,10 +108,12 @@ public class Serveur
 		System.out.println("***************** ");
 
 		Serveur x = new Serveur();
+		/*System.out.println(x.bdd.getNbImages("disney"));*/
+		/*x.bdd.majScore("omar",true);
+		x.bdd.majScore("omar",true);*/
+		/*x.bdd.inscription("julien","hin");
+		x.bdd.inscription("omar","hin");
 
-
-		/*x.bdd.inscription("omar","hin");
-		x.bdd.inscription("julien","hin");
 		x.bdd.inscription("fred","hin");
 
 		x.bdd.majScore("omar",true);

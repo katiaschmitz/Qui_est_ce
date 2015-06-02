@@ -588,9 +588,19 @@ public class DataBase
 		return nombre;
 
 	}
-	public int getNbImages(String x)
+	public int getNbImages(String mode)
 	{
-
+		PreparedStatement req=null;
+		int nombre=-1;
+		try
+		{
+			req=connexion.prepareStatement( "select count(*) as n from image_"+mode);
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+	    		nombre=resultat.getInt("n");
+		}
+		catch(SQLException ex){}
+		return nombre;
 	}
 
 

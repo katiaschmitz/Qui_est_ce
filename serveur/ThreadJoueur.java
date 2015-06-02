@@ -96,6 +96,11 @@ public class ThreadJoueur implements Runnable
 		return in;
 	}
 
+	public PrintWriter getOutput()
+	{	
+		return out;
+	}
+
 /*******************************************************/
 /***             FONCTIONS PRINCIPALES               ***/
 /*******************************************************/
@@ -150,15 +155,19 @@ public class ThreadJoueur implements Runnable
 		/*****élément de compilation***/
 		System.out.println("debut methode threadjoueur : inscription "+pseudo+" "+motPasse);
 		/*********************/
-		boolean rep_serveur = serveur.inscription(pseudo,motPasse);
-		if(rep_serveur == true)
-		{
-			envoiMessageJoueur("1:1");
-			this.pseudo=pseudo;
-			serveur.raffraichirListeAttente(this.pseudo,1);
+		if( !pseudo.equals("") && !motPasse.equals("")){
+			boolean rep_serveur = serveur.inscription(pseudo,motPasse);
+			if(rep_serveur == true)
+			{
+				envoiMessageJoueur("1:1");
+				this.pseudo=pseudo;
+				serveur.raffraichirListeAttente(this.pseudo,1);
+			}
+			else
+				envoiMessageJoueur("1:0");
 		}
-		else
-			envoiMessageJoueur("1:0");
+		else 
+			envoiMessageJoueur("1:2");
 	}
 
 	/**
@@ -178,16 +187,19 @@ public class ThreadJoueur implements Runnable
 		/****element de compilation***/
 		System.out.println("debut methode threadjoueur : connexion"+pseudo+" "+motPasse);
 		/********************/
-		rep_serveur = serveur.connexion(pseudo,motPasse);
-		if(rep_serveur == true)
-		{
-			envoiMessageJoueur("2:1");
-			this.pseudo=pseudo;
-			serveur.raffraichirListeAttente(this.pseudo,1);
+		if( !pseudo.equals("") && !motPasse.equals("")){		
+			rep_serveur = serveur.connexion(pseudo,motPasse);
+			if(rep_serveur == true)
+			{
+				envoiMessageJoueur("2:1");
+				this.pseudo=pseudo;
+				serveur.raffraichirListeAttente(this.pseudo,1);
+			}	
+			else
+				envoiMessageJoueur("2:0");
 		}
-		else
-			envoiMessageJoueur("2:0");
-
+		else 
+			envoiMessageJoueur("2:2");
 	}
 
 	/**
@@ -256,9 +268,10 @@ public class ThreadJoueur implements Runnable
 			ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération du Threadjoueur de l'adversaire
 			if(reponse.equals("1"))
 			{
-				adv.envoiMessageJoueur("6:1");// l adversaire doit lancer la partie
+				//adv.envoiMessageJoueur("35:simpson:disney:s");
+				adv.envoiMessageJoueur("6:1:simpson:disney:s");// l adversaire doit lancer la partie
 				/*enregistrer numéro image*/
-				serveur.chargerImagePartie(this.partie);
+
 			}
 			else
 			{
@@ -292,17 +305,16 @@ public class ThreadJoueur implements Runnable
 	 *
 	 *  @param nb nombre de cases baissees par le joueur.
 	 */
-	public void nbCaseBaissee(String[] nb)
+	public void nbCaseBaissee(String nb)
 	{
 		//COMPILATION
 		System.out.println("debut méthodeThreadjoueur nbCaseBaissee: "+nb);
 		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération Threadjoueur de l'adversaire
 		//int nouv_nb = serveur.augmenterCaseBaissee(this.partie,this.pseudo,Integer.parseInt(nb));
 		String nouv_nb = "";
-		for(int i=1;i<nb.length;++i)
-		nouv_nb = nouv_nb+":"+ nb[i];
+		
 
-		adv.envoiMessageJoueur("9"+ nouv_nb );
+		adv.envoiMessageJoueur(nb);
 	}
 
 	/**
@@ -370,16 +382,19 @@ public class ThreadJoueur implements Runnable
 	public void envoiImage(String image)
 	{
 		//COMPILATION
-		//System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
+		System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
+		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
 		int num_image = Integer.parseInt(image);
 		int i = serveur.recupererImagePartie(num_image,this.partie)  ;// recuperer le numero de l image a envoyer
+		
 		Byte[] b = new Byte[256];
 		byte[] z = new byte[256];
 		int[] c = new int[256];
 		int x;
 		String m = serveur.getModePartie(this.partie);
+		System.out.println("Image : "+m+i);
 		FileInputStream fichiers = null;
-		try{fichiers=new FileInputStream(m+i+".jpg");}
+		try{fichiers=new FileInputStream(m+i+".png");}
 			catch(FileNotFoundException e){System.out.println("erreur ouverture fichier");}
 
 		try{x=fichiers.read(z);
@@ -387,15 +402,22 @@ public class ThreadJoueur implements Runnable
 		{
 			for(int j=0;j<x;j++)
 			{
+					System.out.println(c[j]);
 				b[j]=z[j];
 				c[j]=b[j].intValue();
 				out.write(c[j]);
+				//adv.getOutput().write(c[j]);
 			}
 			x=fichiers.read(z);
 		}
 		x=64000;
 		out.write(x);
-		out.flush();}
+		//adv.getOutput().write(x);
+		out.flush();
+		//adv.getOutput().flush();
+		
+		System.out.println(x);
+		}
 		catch(IOException e){System.out.println("erreur envoi image");}
 	}
 
@@ -427,6 +449,8 @@ public class ThreadJoueur implements Runnable
 			ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
 			serveur.supprimerPartie(this.partie);
 			adv.envoiMessageJoueur("16:");// partie interrompue joueur deconnecté
+			serveur.raffraichirListeAttente(adv.pseudo, 1);
+			serveur.majScore(adv.pseudo,this.pseudo);
 		}
 		//fermeture socket
 		try{
@@ -505,13 +529,61 @@ public class ThreadJoueur implements Runnable
 	{
 		ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
 		serveur.choisirModePartie(mode,this.partie);
+						serveur.chargerImagePartie(this.partie);
 		adv.envoiMessageJoueur("30:"+serveur.recupereNbQuestion(mode));
+		adv.envoiMessageJoueur("18:"+mode);
 	}
+	
+	public void envoyerImageMode(String image){
+                	//COMPILATION
+		//System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
+
+
+
+		Byte[] b = new Byte[256];
+		byte[] z = new byte[256];
+		int[] c = new int[256];
+		int x;
+		FileInputStream fichiers = null;
+		try{fichiers=new FileInputStream(image+"0.png");}
+			catch(FileNotFoundException e){System.out.println("erreur ouverture fichier");}
+
+		try{x=fichiers.read(z);
+		while(x!=-1)
+		{
+			for(int j=0;j<x;j++)
+			{
+				b[j]=z[j];
+				c[j]=b[j].intValue();
+				out.write(c[j]);
+
+			}
+			x=fichiers.read(z);
+		}
+		x=64000;
+		out.write(x);
+
+		out.flush();
+                } 
+		catch(IOException e){System.out.println("erreur envoi image");}
+	
 
 
 }
 
+		public void quitterPartie()
+		{
+			ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);
 
+			serveur.majScore(adv.pseudo,this.pseudo);
+			serveur.supprimerPartie(this.partie);
+			adv.envoiMessageJoueur("16:");
+			serveur.raffraichirListeAttente(this.pseudo, 1);
+			serveur.raffraichirListeAttente(adv.pseudo,1);
+
+		}
+
+}
 
 
 
