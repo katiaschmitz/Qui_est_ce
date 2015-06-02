@@ -169,6 +169,7 @@ public class AnalyseurServeur
 			{
 				/*envoyer listes mode*/
 			}
+
 			else if(demande.equals("19"))
 			{
 				th.envoyerImageMode(infos[1]);

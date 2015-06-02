@@ -268,8 +268,10 @@ public class ThreadJoueur implements Runnable
 			ThreadJoueur adv= serveur.getPartieAdversaire(this.pseudo,this.partie);//récupération du Threadjoueur de l'adversaire
 			if(reponse.equals("1"))
 			{
+
 				//adv.envoiMessageJoueur("35:simpson:disney:s");
 				adv.envoiMessageJoueur("6:1:simpson:disney:s");// l adversaire doit lancer la partie
+
 				/*enregistrer numéro image*/
 
 			}
@@ -567,6 +569,13 @@ public class ThreadJoueur implements Runnable
                 } 
 		catch(IOException e){System.out.println("erreur envoi image");}
 	
+
+	public void listeFavoris(String pseudo)
+	{
+		String reponse="";
+		reponse = serveur.listeFavoris(pseudo);
+		envoiMessageJoueur("36"+reponse);
+	}
 
 
 }

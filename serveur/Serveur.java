@@ -59,7 +59,7 @@ public class Serveur
 				//COMPILATION
 				System.out.println("constructeur serveur : client connecté ");
 			}
-		}catch (Exception e) {		System.out.println("e******** ");
+		}catch (Exception e) {		System.out.println("erreur constructeur serveur ");
  }
 	}
 
@@ -106,22 +106,7 @@ public class Serveur
 		//COMPILATION
 		System.out.println("debut méthodeServeur main ");
 		System.out.println("***************** ");
-
 		Serveur x = new Serveur();
-		/*System.out.println(x.bdd.getNbImages("disney"));*/
-		/*x.bdd.majScore("omar",true);
-		x.bdd.majScore("omar",true);*/
-		/*x.bdd.inscription("julien","hin");
-		x.bdd.inscription("omar","hin");
-
-		x.bdd.inscription("fred","hin");
-
-		x.bdd.majScore("omar",true);
-		x.bdd.majScore("omar",true);
-		x.bdd.majScore("fred",true);*/
-
-
-
 
 		//COMPILATION
 		System.out.println("fin méthodeServeur main ");
@@ -487,6 +472,11 @@ public class Serveur
 	public String getModePartie(Partie p)
 	{
 		return p.getMode();
+	}
+
+	public String listeFavoris(String pseudo)
+	{
+		return bdd.listeFavoris(pseudo);
 	}
 
 
