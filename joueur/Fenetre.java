@@ -262,7 +262,7 @@ public class Fenetre extends JFrame  {
 
 			  boutonAux = new JButton();
 
-			  boutonAux.setIcon(new ImageIcon("j"+i+".jpg"));
+			  boutonAux.setIcon(new ImageIcon("j"+i+".png"));
 
 			  boutonAux.setSize(30,30);
 
@@ -391,7 +391,7 @@ public class Fenetre extends JFrame  {
  {
 	   System.out.println("debut setimagechoisie");
 
-	 imageChoisie.setIcon(new ImageIcon("j"+i+".jpg"));
+	 imageChoisie.setIcon(new ImageIcon("j"+i+".png"));
 	  this.validate();
 
  }

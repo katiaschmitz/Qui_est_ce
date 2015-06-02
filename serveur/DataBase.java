@@ -526,11 +526,11 @@ public class DataBase
 		{
 			for(i=0;i<recupererNombreJoueurs();i++)
 			{
-			req=connexion.prepareStatement( "select q from question_"+mode);
+			req=connexion.prepareStatement( "select texte from question_"+mode);
 			ResultSet resultat = req.executeQuery();
 			while(resultat.next())
 			{
-				reponse=reponse+":"+resultat.getString("q");
+				reponse=reponse+":"+resultat.getString("texte");
 			}
 
 			ps = resultat.getString("q");
@@ -551,15 +551,20 @@ public class DataBase
 		int[] nombre= {-1,-1} ;
 		try
 		{
-			req=connexion.prepareStatement( "select r,ref  from question_"+mode+" where id = ?");
+			req=connexion.prepareStatement( "select num_champ,reponse  from question_"+mode+" where id = ?");
 			req.setInt(1,id_question);
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
-	    		nombre[0]=resultat.getInt("r");
-	    		nombre[1] = resultat.getInt("ref");
+	    		nombre[0]=resultat.getInt("num_champ");
+	    		nombre[1] = resultat.getInt("reponse");
 		}
+<<<<<<< HEAD
 		catch(SQLException ex){System.out.println("erreur getChampReponse");}
 		System.out.println("champ" + nombre[0] + " valeur"+ nombre[1]);
+=======
+		catch(SQLException ex){}
+		System.out.println("reponse" + nombre[0] + " valeur"+ nombre[1]);
+>>>>>>> 0fce81c6b09bedc287fb26d9ec1880d54de135b2
 		return nombre;
 
 	}
@@ -569,7 +574,7 @@ public class DataBase
 	{
 		PreparedStatement req=null;
 		boolean x = false;
-		String ch="champ"+num_champs;
+		String ch="reponse"+num_champs;
 		int res;
 
 		if(correct)
@@ -636,8 +641,8 @@ public class DataBase
 
 	public int getBonneReponse( int id_img,int champ,String m)
 	{
-		System.out.println("id_image = "+id_img+" champ"+champ);
-		String col = "champ"+champ;
+		System.out.println("id_image = "+id_img+" reponse"+champ);
+		String col = "reponse"+champ;
 		System.out.println("**"+col+"**");
 
 		PreparedStatement req=null;

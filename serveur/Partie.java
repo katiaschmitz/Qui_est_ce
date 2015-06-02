@@ -47,7 +47,7 @@ public class Partie
 		joueur2=pseudo2;
 		//nbCaseBaissee1=0;
 		//nbCaseBaissee2=0;
-		mode = "s";
+		mode = "";
 
 	}
 
@@ -56,6 +56,7 @@ public class Partie
 	public void setMode(String mode)
 	{
 		this.mode = mode;
+		System.out.println("Mode : "+mode);
 	}
 
 	public String getMode()
@@ -210,18 +211,23 @@ public class Partie
 	public void initialiseImagePartie(int nb)
 	{
 		//COMPILATION
+		System.out.println("nb: "+nb);
 		System.out.println("debut méthodePartie initialiseImagePartie: ");
 		Random rand;
 		ArrayList<Integer> tab = new ArrayList<Integer>();
-		for (int i=0; i<24;++i)
+		for (int i=0; i<24;++i)//attention
 		tab.add(i+1);
 
-		for(int i=0; i<24;++i)
+                for(int i=0; i<24;++i)
+		{
+			images[i]= i+1;
+		}
+		/*for(int i=0; i<24;++i)
 		{
 			rand = new Random();
 			images[i]=tab.get(rand.nextInt(nb-i));
 			tab.remove((Integer)images[i]);
-		}
+		}*/
 	}
 }
 

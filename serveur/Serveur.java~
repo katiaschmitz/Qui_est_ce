@@ -42,7 +42,7 @@ public class Serveur
 		try{
 			System.out.println("entree dans la boucle1 ");
 
-		socket_serveur = new ServerSocket(2020);
+		socket_serveur = new ServerSocket(2028);
 		System.out.println("entree dans la boucle2 ");
 
 		bdd = new DataBase();
@@ -107,6 +107,24 @@ public class Serveur
 		System.out.println("debut méthodeServeur main ");
 		System.out.println("***************** ");
 		Serveur x = new Serveur();
+<<<<<<< HEAD
+		/*System.out.println(x.bdd.getNbImages("disney"));*/
+		/*x.bdd.majScore("omar",true);
+		x.bdd.majScore("omar",true);*/
+		/*x.bdd.inscription("julien","hin");
+		x.bdd.inscription("omar","hin");
+
+		x.bdd.inscription("fred","hin");
+
+		x.bdd.majScore("omar",true);
+		x.bdd.majScore("omar",true);
+		x.bdd.majScore("fred",true);*/
+
+
+
+
+=======
+>>>>>>> 665f5185e5cd269ed13555fb69a20b6c79d26146
 		//COMPILATION
 		System.out.println("fin méthodeServeur main ");
 	}
@@ -473,7 +491,7 @@ public class Serveur
 		return p.getMode();
 	}
 
-	public String listeFavoris(String peudo)
+	public String listeFavoris(String pseudo)
 	{
 		return bdd.listeFavoris(pseudo);
 	}

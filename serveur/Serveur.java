@@ -42,7 +42,7 @@ public class Serveur
 		try{
 			System.out.println("entree dans la boucle1 ");
 
-		socket_serveur = new ServerSocket(2020);
+		socket_serveur = new ServerSocket(2028);
 		System.out.println("entree dans la boucle2 ");
 
 		bdd = new DataBase();
@@ -107,6 +107,7 @@ public class Serveur
 		System.out.println("debut méthodeServeur main ");
 		System.out.println("***************** ");
 		Serveur x = new Serveur();
+
 		//COMPILATION
 		System.out.println("fin méthodeServeur main ");
 	}
