@@ -325,6 +325,32 @@ public class DataBase
 		return reponse;
 	}
 
+	
+	public String afficherScoreJoueur(String pseudo)
+	{
+
+		PreparedStatement req=null;
+		String reponse = "";
+		int g;
+		int p;
+		int classement;
+		String ps="";
+		try
+		{
+			req=connexion.prepareStatement( "select rang,pseudo,gagne,perdu from qui_est_ce where pseudo=?");
+			req.setString( 1, pseudo );
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+			g=resultat.getInt("gagne");
+			p=resultat.getInt("perdu");
+			classement = resultat.getInt("rang")+1;
+			ps = resultat.getString("pseudo");
+			reponse = reponse + ":" +ps +" "+g+" "+p;
+		}
+		catch(SQLException ex){System.out.println("erreur afficherScoreJoueur");}
+		return reponse;
+
+	}
 
 	/**
 	 * arrange le classement du joueur donne en argument, la methode cherche le nouveau classement du joueur, et decale le 

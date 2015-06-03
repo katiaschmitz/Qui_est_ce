@@ -107,7 +107,6 @@ public class Serveur
 		System.out.println("debut méthodeServeur main ");
 		System.out.println("***************** ");
 		Serveur x = new Serveur();
-		System.out.println(x.bdd.afficherScore("bouh"));
 		//COMPILATION
 		System.out.println("fin méthodeServeur main ");
 	}
