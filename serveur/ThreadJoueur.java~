@@ -384,11 +384,7 @@ public class ThreadJoueur implements Runnable
 	public void envoiImage(String image)
 	{
 		//COMPILATION
-<<<<<<< HEAD
 		System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
-=======
-		//System.out.println("debut méthodeThreadjoueur envoiImage d indice: "+ image);
->>>>>>> 665f5185e5cd269ed13555fb69a20b6c79d26146
 		ThreadJoueur adv = serveur.getPartieAdversaire(this.pseudo,this.partie);//récuperation threadjoueur adversaire
 		int num_image = Integer.parseInt(image);
 		int i = serveur.recupererImagePartie(num_image,this.partie)  ;// recuperer le numero de l image a envoyer
@@ -412,28 +408,18 @@ public class ThreadJoueur implements Runnable
 				b[j]=z[j];
 				c[j]=b[j].intValue();
 				out.write(c[j]);
-<<<<<<< HEAD
 				//adv.getOutput().write(c[j]);
-=======
-				adv.getOutput().write(c[j]);
->>>>>>> 665f5185e5cd269ed13555fb69a20b6c79d26146
 			}
 			x=fichiers.read(z);
 		}
 		x=64000;
 		out.write(x);
-<<<<<<< HEAD
 		//adv.getOutput().write(x);
 		out.flush();
 		//adv.getOutput().flush();
 		
 		System.out.println(x);
 		}
-=======
-		adv.getOutput().write(x);
-		out.flush();
-		adv.getOutput().flush();}
->>>>>>> 665f5185e5cd269ed13555fb69a20b6c79d26146
 		catch(IOException e){System.out.println("erreur envoi image");}
 	}
 
@@ -448,6 +434,19 @@ public class ThreadJoueur implements Runnable
 		System.out.println("debut méthodeThreadjoueur afficherScores: "+this.pseudo);
 		this.envoiMessageJoueur("14"+ serveur.recupererScores(this.pseudo));
 	}
+
+	/**
+	 *  Elle recupere le score d'un joueur et le renvoie au joueur
+	 *
+	 *  @param pseudo pseudo de l utilisateur ayant fait la demande
+	 */
+	public void afficherScoreJoueur()
+	{
+		System.out.println("debut méthodeThreadjoueur afficherScoreJoueur: "+this.pseudo);
+		this.envoiMessageJoueur("14"+ serveur.recupererScoreJoueur(this.pseudo));
+	}
+
+
 
 	/**
 	 *  Elle traite le cas ou le joueur se deconnecte cest a dire elle supprime la partie et previent l autre joueur
@@ -582,17 +581,15 @@ public class ThreadJoueur implements Runnable
 		out.flush();
                 } 
 		catch(IOException e){System.out.println("erreur envoi image");}
+	}
 	
 
-	public void listeFavoris(String pseudo)
+	public void listeFavoris()
 	{
 		String reponse="";
-		reponse = serveur.listeFavoris(pseudo);
+		reponse = serveur.listeFavoris(this.pseudo);
 		envoiMessageJoueur("36"+reponse);
 	}
-
-
-}
 
 		public void quitterPartie()
 		{

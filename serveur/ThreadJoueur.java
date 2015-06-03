@@ -436,6 +436,19 @@ public class ThreadJoueur implements Runnable
 	}
 
 	/**
+	 *  Elle recupere le score d'un joueur et le renvoie au joueur
+	 *
+	 *  @param pseudo pseudo de l utilisateur ayant fait la demande
+	 */
+	public void afficherScoreJoueur()
+	{
+		System.out.println("debut méthodeThreadjoueur afficherScoreJoueur: "+this.pseudo);
+		this.envoiMessageJoueur("50"+ serveur.recupererScoreJoueur(this.pseudo));
+	}
+
+
+
+	/**
 	 *  Elle traite le cas ou le joueur se deconnecte cest a dire elle supprime la partie et previent l autre joueur
 	 *  si une partie etait en cours
 	 *
@@ -568,17 +581,15 @@ public class ThreadJoueur implements Runnable
 		out.flush();
                 } 
 		catch(IOException e){System.out.println("erreur envoi image");}
+	}
 	
 
-	public void listeFavoris(String pseudo)
+	public void listeFavoris()
 	{
 		String reponse="";
-		reponse = serveur.listeFavoris(pseudo);
+		reponse = serveur.listeFavoris(this.pseudo);
 		envoiMessageJoueur("36"+reponse);
 	}
-
-
-}
 
 		public void quitterPartie()
 		{

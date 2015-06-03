@@ -165,9 +165,9 @@ public class AnalyseurServeur
 			{
 				th.choisirMode(infos[1]);
 			}
-			else if(demande.equals("35"))
+			else if(demande.equals("36"))
 			{
-				/*envoyer listes mode*/
+				th.listeFavoris();
 			}
 
 			else if(demande.equals("19"))
@@ -177,6 +177,13 @@ public class AnalyseurServeur
 			else if(demande.equals("40"))
 			{
 				th.quitterPartie();
+<<<<<<< HEAD
+=======
+			}
+			else if(demande.equals("50"))
+			{
+				th.();
+>>>>>>> eea13b6e1e4fad5f066d708e44950575c697a448
 			}
 			/*remise à zero des informations*/
 			recu="";

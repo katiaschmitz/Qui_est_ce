@@ -281,7 +281,7 @@ public class DataBase
 	public String afficherScore(String pseudo)
 	{
 		PreparedStatement req=null;
-		int i;
+		int nombre;
 		String reponse = "";
 		int g;
 		int p;
@@ -289,25 +289,75 @@ public class DataBase
 
 		try
 		{
-			for(i=0;i<recupererNombreJoueurs();i++)
-			{
-			req=connexion.prepareStatement( "select pseudo,gagne,perdu from qui_est_ce where rang = ?");
-			req.setInt( 1, i );
+			
+			req=connexion.prepareStatement( "select pseudo,gagne,perdu from qui_est_ce where rang <10");
 			ResultSet resultat = req.executeQuery();
-			resultat.next();
-			g=resultat.getInt("gagne");
-			p=resultat.getInt("perdu");
-			ps = resultat.getString("pseudo");
-			reponse = reponse + ":" +ps +" "+g+" "+p;
-
+			while(resultat.next())
+			{
+				g=resultat.getInt("gagne");
+				p=resultat.getInt("perdu");
+				ps = resultat.getString("pseudo");
+				reponse = reponse + ":" +ps +" "+g+" "+p;
 			}
+			req=connexion.prepareStatement( "select rang from qui_est_ce where pseudo=?");	
+			req.setString( 1, pseudo );	
+			resultat = req.executeQuery();
+			resultat.next();
+			nombre = resultat.getInt("rang");	
+			if(nombre>=10)
+			{
+				req=connexion.prepareStatement( "select pseudo,gagne,perdu from qui_est_ce where pseudo=?");
+				req.setString( 1, pseudo );
+				resultat = req.executeQuery();
+				resultat.next();
+
+				g=resultat.getInt("gagne");
+				p=resultat.getInt("perdu");
+				ps = resultat.getString("pseudo");
+				reponse = reponse + ":" +ps +" "+g+" "+p;	
+			}
+
+	
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur afficherScore");}
 
 
 		return reponse;
 	}
 
+	
+
+	
+	/**
+	 * renvoie le score d'un joueur ainsi que son classement
+	 * @param  pseudo la personne qui demande la liste, qu on ne renverra pas dans la liste
+	 * @return  une chaine de caracteres avec des ':' entre chaque personnes et des ' ' entre le nom,victoires et defaites de 		 * chaque personne
+	 */
+	public String afficherScoreJoueur(String pseudo)
+	{
+
+		PreparedStatement req=null;
+		String reponse = "";
+		int g;
+		int p;
+		int classement;
+		String ps="";
+		try
+		{
+			req=connexion.prepareStatement( "select rang,pseudo,gagne,perdu from qui_est_ce where pseudo=?");
+			req.setString( 1, pseudo );
+			ResultSet resultat = req.executeQuery();
+			resultat.next();
+			g=resultat.getInt("gagne");
+			p=resultat.getInt("perdu");
+			classement = resultat.getInt("rang")+1;
+			ps = resultat.getString("pseudo");
+			reponse = reponse + ":" +ps +" "+g+" "+p;
+		}
+		catch(SQLException ex){System.out.println("erreur afficherScoreJoueur");}
+		return reponse;
+
+	}
 
 	/**
 	 * arrange le classement du joueur donne en argument, la methode cherche le nouveau classement du joueur, et decale le 
@@ -333,7 +383,7 @@ public class DataBase
 	    		System.out.println("indice = "+indice);
 
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur arrangerClassement");}
 		decalerHaut(indice,pseudo);
 		int taille=recupererNombreJoueurs()-1;
 		int[] tab=new int[taille];
@@ -381,7 +431,7 @@ public class DataBase
 				req.setString( 1, pseudo );
 				req.executeUpdate();
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur decalerHaut");}
 
 	}
 
@@ -402,7 +452,7 @@ public class DataBase
 				req.setInt( 1, i );
 				req.executeUpdate();
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur decalerBas");}
 	}
 
 
@@ -425,7 +475,7 @@ public class DataBase
 				req.setString( 2, pseudo );
 				req.executeUpdate();
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur setRang");}
 
 	}
 
@@ -452,7 +502,7 @@ public class DataBase
 				
 			}
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur remplir Tableau");}
 
 	}
 
@@ -472,7 +522,7 @@ public class DataBase
 				resultat.next();
 	    		nombre=resultat.getInt("n");
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur recupererNombreJoueurs");}
 		return nombre;
 
 
@@ -489,7 +539,7 @@ public class DataBase
 				req=connexion.prepareStatement( "update qui_est_ce set connecte=0 where connecte=1");
 				req.executeUpdate();
 		}
-		catch(SQLException ex){		System.out.println("x= aux");}
+		catch(SQLException ex){System.out.println("deconnecter Tous");}
 
 
 	}
@@ -513,7 +563,7 @@ public class DataBase
 			{
 			req=connexion.prepareStatement( "select texte from question_"+mode);
 			ResultSet resultat = req.executeQuery();
-			while ( resultat.next())
+			while(resultat.next())
 			{
 				reponse=reponse+":"+resultat.getString("texte");
 			}
@@ -523,7 +573,7 @@ public class DataBase
 
 			}
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur listeQuestion");}
 
 
 		return reponse;
@@ -543,8 +593,11 @@ public class DataBase
 	    		nombre[0]=resultat.getInt("num_champ");
 	    		nombre[1] = resultat.getInt("reponse");
 		}
-		catch(SQLException ex){}
-		System.out.println("reponse" + nombre[0] + " valeur"+ nombre[1]);
+
+		catch(SQLException ex){System.out.println("erreur getChampReponse");}
+		System.out.println("champ" + nombre[0] + " valeur"+ nombre[1]);
+
+		
 		return nombre;
 
 	}
@@ -589,7 +642,7 @@ public class DataBase
 	    			x=false;
 
 			}
-			catch(SQLException ex){}
+			catch(SQLException ex){System.out.println("verifierImage");}
 		}
 		return x;
 	}
@@ -613,7 +666,7 @@ public class DataBase
 			resultat.next();
 	    		nombre=resultat.getInt("n");
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur getNombreQuestion");}
 		return nombre;
 
 
@@ -779,7 +832,7 @@ public class DataBase
 			ps = resultat.getString("fav");
 			reponse = reponse + ":" +ps;
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur supprimerFavoris 2eme requete");}
 
 
 		return reponse;	

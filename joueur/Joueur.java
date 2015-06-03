@@ -28,7 +28,11 @@ public class Joueur implements ActionListener  {
 		try{
 		etat=0;
 		nbAuto=0;
+<<<<<<< HEAD
+		socket = new Socket("10.11.62.9",2020);
+=======
 		socket = new Socket("10.11.81.10",2020);
+>>>>>>> 0fce81c6b09bedc287fb26d9ec1880d54de135b2
 		out = new PrintWriter(socket.getOutputStream());
 	    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    System.out.println("Connecter");
