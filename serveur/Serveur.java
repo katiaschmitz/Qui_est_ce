@@ -385,6 +385,18 @@ public class Serveur
 		}
 	}
 
+	public void raffraichirListeAttente2(ThreadJoueur joueur)
+	{
+		ThreadJoueur res = null;
+		for(int i=0;i<joueurs.size() ;i++)
+		{
+			if(existePartie(joueurs.get(i).getPseudo()))
+			{
+				joueur.raffraichirListeAttente(joueurs.get(i).getPseudo(),0);
+			}
+		}
+	}
+
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
 	 *  Elle permet de répondre  à une question posée.

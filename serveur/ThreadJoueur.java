@@ -203,6 +203,7 @@ public class ThreadJoueur implements Runnable
 	{
 		//System.out.println("debut méthodeThreadjoueur listeAttente: ");
 		envoiMessageJoueur("3"+ serveur.listeAttente(this.pseudo));
+		serveur.raffraichirListeAttente2(this);
 	}
 
 	/**
