@@ -39,12 +39,12 @@ public class Serveur
 			parties= new ArrayList<Partie>();
 			bdd.deconncterTous();
 
-			while (true) // attente en boucle de connexion (bloquant sur ss.accept)
+			/*while (true) // attente en boucle de connexion (bloquant sur ss.accept)
 			{
 				System.out.println("constructeur serveur : attente client sur "+InetAddress.getLocalHost());
 			        joueurs.add(new ThreadJoueur(socket_serveur.accept(),this));
 				System.out.println("constructeur serveur : client connecté ");
-			}
+			}*/
 		}catch (Exception e){System.out.println("erreur constructeur serveur ");}
 	}
 
@@ -82,6 +82,16 @@ public class Serveur
 	{
 		//System.out.println("debut méthodeServeur main ");
 		Serveur x = new Serveur();
+		x.bdd.inscription("omar","bla");
+		x.bdd.inscription("omar2","bla");
+		x.bdd.inscription("omar3","bla");
+		x.bdd.inscription("omar4","bla");
+		x.bdd.majScore("omar4",true);
+		x.bdd.majScore("omar4",true);
+		x.bdd.majScore("omar4",true);	
+		x.bdd.majScore("omar4",true);
+		x.bdd.majScore("omar3",false);
+		x.bdd.majScore("omar3",false);								
 	}
 
 /***************************************************************/
@@ -392,7 +402,7 @@ public class Serveur
 		{
 			if(existePartie(joueurs.get(i).getPseudo()))
 			{
-				joueur.raffraichirListeAttente(joueur,0);
+				joueur.raffraichirListeAttente(joueurs.get(i).getPseudo(),0);
 			}
 		}
 	}

@@ -376,26 +376,27 @@ public class DataBase
 
 		}
 		catch(SQLException ex){System.out.println("erreur arrangerClassement");}
-		decalerHaut(indice,pseudo);
-		int taille=recupererNombreJoueurs()-1;
-		int[] tab=new int[taille];
-		remplirTableau(tab,pseudo);
-		for(i=0;i<tab.length;i++)
-	    		System.out.println("tab["+i+"] = "+tab[i]);
-		for(i=0;i<taille && x==false ;i++)
+		if(indice!=-1)
 		{
-			if(dif>tab[i])
+			decalerHaut(indice,pseudo);
+			int taille=recupererNombreJoueurs()-1;
+			int[] tab=new int[taille];
+			remplirTableau(tab,pseudo);
+			for(i=0;i<taille && x==false ;i++)
 			{
-				x=true;
-				decalerBas(i);	
+				if(dif>tab[i])
+				{
+					x=true;
+					decalerBas(i);	
+					setRang(pseudo,i);				
+				}
+			}
+			if(x==false)
+			{
 				setRang(pseudo,i);				
 			}
-		}
-		if(x==false)
-		{
-			setRang(pseudo,i);				
-		}
 		
+		}
 	}
 
 
