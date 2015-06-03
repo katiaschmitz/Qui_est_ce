@@ -10,16 +10,9 @@
  *  correspondant aux joueurs, les différentes parties
  *
  */
-
-
 import java.net.InetAddress;
 import java.net.ServerSocket;
-
 import java.util.*;
-
-
-
-
 
 public class Serveur
 {
@@ -33,34 +26,26 @@ public class Serveur
 /*******************************************************/
 
 	/**
-	 *  Initialise un Serveur en créant les différentes listes vides et en attendant la connexion des utilisateurs pour crééer les 		 *  joueurs en leur attribuant une socket.
+	 *  Initialise un Serveur en créant les différentes listes vides et en attendant la connexion des utilisateurs pour créer les 		 *  joueurs en leur attribuant une socket.
 	 *
 	 * @return Serveur
 	 */
 	public Serveur()
 	{
 		try{
-			System.out.println("entree dans la boucle1 ");
+			socket_serveur = new ServerSocket(2028);
+			bdd = new DataBase();
+			joueurs= new ArrayList<ThreadJoueur>();
+			parties= new ArrayList<Partie>();
+			bdd.deconncterTous();
 
-		socket_serveur = new ServerSocket(2028);
-		System.out.println("entree dans la boucle2 ");
-
-		bdd = new DataBase();
-		joueurs= new ArrayList<ThreadJoueur>();
-		parties= new ArrayList<Partie>();
-
-		bdd.deconncterTous();
-
-			/*while (true) // attente en boucle de connexion (bloquant sur ss.accept)
+			while (true) // attente en boucle de connexion (bloquant sur ss.accept)
 			{
-				//COMPILATION
 				System.out.println("constructeur serveur : attente client sur "+InetAddress.getLocalHost());
 			        joueurs.add(new ThreadJoueur(socket_serveur.accept(),this));
-				//COMPILATION
 				System.out.println("constructeur serveur : client connecté ");
-			}*/
-		}catch (Exception e) {		System.out.println("erreur constructeur serveur ");
- }
+			}
+		}catch (Exception e){System.out.println("erreur constructeur serveur ");}
 	}
 
 	/**
@@ -72,10 +57,7 @@ public class Serveur
 	 */
 	public ThreadJoueur getThreadJoueur(String pseudo)
 	{
-		/******element de compilation******/
-		System.out.println("début methodeServeur getThreadJoueur :"+pseudo );
-		/***************/
-
+		//System.out.println("début methodeServeur getThreadJoueur :"+pseudo );
 		ThreadJoueur res=null;
 		boolean stop=false;
 		for(int i=0;i<joueurs.size()&& !stop ;i++)
@@ -84,15 +66,10 @@ public class Serveur
 			{
 				res = joueurs.get(i);
 				stop=true;
-				/**********element de compilation*************/
-				System.out.println("fin methodeServeur getThreadJoueur :"+pseudo+"thread "+ i);
-				/********************************/
 			}
 		}
 		return res;
 	}
-
-
 
 /*******************************************************/
 /***             FONCTIONS PRINCIPALES               ***/
@@ -103,12 +80,8 @@ public class Serveur
 	 */
 	public static void main(String args[])
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur main ");
-		System.out.println("***************** ");
+		//System.out.println("debut méthodeServeur main ");
 		Serveur x = new Serveur();
-		//COMPILATION
-		System.out.println("fin méthodeServeur main ");
 	}
 
 /***************************************************************/
@@ -130,13 +103,12 @@ public class Serveur
 	 */
 	public boolean inscription(String pseudo,String motPasse)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur inscription: "+pseudo+" "+motPasse);
+		//System.out.println("debut méthodeServeur inscription: "+pseudo+" "+motPasse);
 		return bdd.inscription(pseudo,motPasse);
 	}
 
 	/**
-	 *  Cette fonction est appelée par un ThreadJoueur..
+	 *  Cette fonction est appelée par un ThreadJoueur.
 	 *  Elle demande a la base de données si les informations de connexion sont correctes
 	 *
 	 *  @param pseudo pseudo pour la connexion
@@ -145,67 +117,112 @@ public class Serveur
 	 */
 	public boolean connexion(String pseudo,String motPasse)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur connexion: "+pseudo+" "+motPasse);
+		//System.out.println("debut méthodeServeur connexion: "+pseudo+" "+motPasse);
 		return bdd.connexion(pseudo,motPasse);
 	}
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle demande a la base de données les scores pour le joueur dont le pseudo est en argument
+	 *  Elle demande a la base de données les scores de tous les joueurs
 	 *
 	 *  @param joueur pseudo de l utilsateur faisant la demande
-	 *  @return une chaine de caractère contenant les scores
+	 *  @return une chaine de caractères contenant les scores
 	 */
 	public String recupererScores(String joueur)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur recupererScores: "+joueur);
+		//System.out.println("debut méthodeServeur recupererScores: "+joueur);
 		return bdd.afficherScore(joueur);
 	}
 
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle demande a la base de données les scores d'un joueur
+	 *
+	 *  @param joueur pseudo de l utilsateur faisant la demande
+	 *  @return une chaine de caractères contenant son scores
+	 */
 	public String recupererScoreJoueur(String joueur)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur recupererScorejoueur: "+joueur);
-		return bdd.afficherScore(joueur);
-
+		//System.out.println("debut méthodeServeur recupererScorejoueur: "+joueur);
+		return bdd.afficherScoreJoueur(joueur);
 	}
-
-
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
 	 *  Elle demande a la base de données la liste des joueurs en attente pour l utilisateur dont le pseudo
 	 *  est donné en argument
+	 * 
 	 *  @param joueur pseudo à ne pas prendre en compte (celui qui veut la liste)
 	 *  @return une chaine de caractère avec tous les noms
 	 */
 	public String listeAttente(String joueur)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeurlisteAttente: "+joueur);
-		 return bdd.listeJoueur(joueur);
+		//System.out.println("debut méthodeServeurlisteAttente: "+joueur);
+		return bdd.listeJoueur(joueur);
 	}
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
 	 *  Elle demande a la base de données de supprimer le joueur des utilisateur connectés
 	 *
-	 *  @param joueur pseudo à ne pas prendre en compte (celui qui veut la liste)
+	 *  @param joueur pseudo du joueur
 	 */
 	public void deconnexion(String joueur)
 	{
 		bdd.deconnexion(joueur);
-		ThreadJoueur s = getThreadJoueur( joueur);
+		ThreadJoueur s = getThreadJoueur(joueur);
 		joueurs.remove(s);
 	}
 
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle permet de mettre à jours les scores
+	 * 
+	 *  @param gagnant pseudo du joueur ayant gagné
+	 *  @param perdant pseudo du joueur ayant perdu
+	 */
 	public void majScore(String gagnant,String perdant)
 	{
 		bdd.majScore(gagnant,true);
 		bdd.majScore(perdant,false);
 	}
+
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle demande à la base de données le nombre de questions disponibles dans le mode
+	 * 
+	 * @param mode nom du mode
+	 * @ return nombre de questions du mode
+	 */
+	public int recupereNbQuestion(String mode)
+	{
+		return bdd.getNombreQuestion(mode);
+	}
+
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle permet de récupérer la liste des questions du mode
+	 *
+	 *  @param mode mode choisi
+	 *  @param return liste de questions du mode
+	 */
+	public String listeQuestion(String mode)
+	{
+		return bdd.listeQuestion(mode);
+	}
+	
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle permet de récupérer la liste des favoris du joueur
+	 *
+	 *  @param pseudo pseudo du joueur
+	 *  @param return liste contenant les favoris du joueur
+	 */
+	public String listeFavoris(String pseudo)
+	{
+		return bdd.listeFavoris(pseudo);
+	}
+
 
 /************************************************/
 /**********   gestion parties   *****************/
@@ -213,16 +230,15 @@ public class Serveur
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle creee une partie avec les deux joueurs donnés en argument.
-	 *  Elle est creee lors d'une proposition de partie
+	 *  Elle créée une partie avec les deux joueurs donnés en argument.
+	 *  Elle est créée lors d'une proposition de partie
 	 *
-	 *  @param joueur1 pseudo du joueur ayant proposer la partie
+	 *  @param joueur1 pseudo du joueur ayant proposé la partie
 	 *  @param joueur2 pseudo de l'autre joueur
-	 *  @return la partie creee
+	 *  @return la partie créée
 	 */
 	public Partie creerPartie(String joueur1,String joueur2)
 	{
-		//COMPILATION
 		System.out.println("debut méthodeServeur creerPartie: "+joueur1+" "+joueur2);
 		Partie p = new Partie(joueur1, joueur2);
 		parties.add(p);
@@ -231,20 +247,15 @@ public class Serveur
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle permet de verifier si le joueur donner en argument n'a pas de partie.
+	 *  Elle permet de verifier si le joueur donné en argument n'a pas de partie.
 	 *  C'est a dire s'il n'a pas fait de demande et s'il n'en a pas en attente
 	 *
 	 *  @param joueur pseudo joueur quel'on veut verifier
-	 *
 	 *  @return true s'il a une partie,false sinon
 	 */
 	public boolean existePartie(String joueur)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur existePartie: "+joueur);
-		System.out.println("parties.size() "+parties.size());
-
-
+		//System.out.println("debut méthodeServeur existePartie: "+joueur);
 		for(int i=0;i<parties.size();i++)
 		{
 			Partie p = parties.get(i);
@@ -256,8 +267,8 @@ public class Serveur
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle cherche un l'adversaire d'un joueur dont le pseudo et la partie sont specifié en argument
-	 *  Il recupere le pseudo de l'adversaire dans la parties puis il recherche le ThreadJoueur correspondant
+	 *  Elle cherche un l'adversaire d'un joueur dont le pseudo et la partie sont specifiés en argument
+	 *  Il récupère le pseudo de l'adversaire dans la partie puis il recherche le ThreadJoueur correspondant
 	 *
 	 *  @param joueur pseudo du joueur dont on veut trouver l'adversaire
 	 *  @param p partie du joueur
@@ -265,17 +276,14 @@ public class Serveur
 	 */
 	public ThreadJoueur getPartieAdversaire(String joueur,Partie p)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur getPartieAdversaire: "+joueur);
+		//System.out.println("debut méthodeServeur getPartieAdversaire: "+joueur);
 		String adv = p.getAdversaire(joueur);//recupere le pseudo de l'adversaire
-		//COMPILATION
-		System.out.println("méthodeServeur getPartieAdversaire: "+joueur+" adversaire "+adv);
 		return getThreadJoueur(adv);
 	}
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle supprime la partie donnee en argument
+	 *  Elle supprime la partie donnée en argument
 	 *
 	 *  @param p partie a supprimer
 	 */
@@ -286,7 +294,7 @@ public class Serveur
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle met a jours la partie donnée en argument en ajoutant le choix du joueur spécifiée
+	 *  Elle met a jours la partie donnée en argument en ajoutant le choix du joueur spécifié
 	 *
 	 *  @param joueur pseudo du joueur
 	 *  @param p partie en question
@@ -294,31 +302,13 @@ public class Serveur
 	 */
 	public void ajouterChoixPersoPartie(int choix,String joueur,Partie p)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur ajoutChoixPersoPartie: image"+choix+" "+joueur);
+		//System.out.println("debut méthodeServeur ajoutChoixPersoPartie: image"+choix+" "+joueur);
 		p.setChoixJoueur(joueur,choix);
 	}
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle met a jours la partie donnée en argument en invrémentant le nombre de cases baissées du joueur spécifiée
-	 *
-	 *  @param joueur pseudo du joueur
-	 *  @param p partie en question
-	 *  @param nb nombre de case baissée supplementaire
-	 *  @return nombre de case baissée au totale du joueur spécifié
-	 */
-	/*public int augmenterCaseBaissee(Partie p,String joueur,int nb)
-	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur augmenterCAaseBaissee: "+joueur+" "+ nb);
-		p.ajouterCase(joueur,nb);
-		return p.getNbCaseBaissee(joueur);
-	}*/
-
-	/**
-	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle vérifie si l'image proposé est la bonne
+	 *  Elle vérifie si l'image proposée est la bonne
 	 *
 	 *  @param joueur pseudo du joueur
 	 *  @param p partie en question
@@ -327,25 +317,8 @@ public class Serveur
 	 */
 	public boolean verifierReponse(Partie p,String joueur,int choix)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur verifierReponse: "+joueur+ "image "+choix);
+		//System.out.println("debut méthodeServeur verifierReponse: "+joueur+ "image "+choix);
 		return p.verifierChoix(joueur,choix);
-	}
-
-	/**
-	 *  Cette fonction est appelée par un ThreadJoueur.
-	 *  Elle crée un tableau d'entier correspondant aux images dans la partie donnée en argument
-	 *
-	 *  @param p partie en question
-	 */
-	public void chargerImagePartie(Partie p)
-	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur chargerIMagePartie: ");
-		String mode = p.getMode();
-		int nb = bdd.getNbImages(mode);
-		
-		p.initialiseImagePartie(nb);
 	}
 
 	/**
@@ -358,9 +331,32 @@ public class Serveur
 	 */
 	public int recupererImagePartie(int num, Partie p)
 	{
-		//COMPILATION
-		System.out.println("debut méthodeServeur recupererImagePartie: "+ num);
+		//System.out.println("debut méthodeServeur recupererImagePartie: "+ num);
 		return p.getImage(num);
+	}
+
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle permet d'initialiser le mode de la partie
+	 *
+	 *  @param p partie en question
+	 *  @param mode mode choisi
+	 */
+	public void choisirModePartie(String mode, Partie p)
+	{
+		p.setMode(mode);
+	}
+
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle permet de récupérer le mode de la partie
+	 *
+	 *  @param p partie en question
+	 *  @return mode de la partie
+	 */
+	public String getModePartie(Partie p)
+	{
+		return p.getMode();
 	}
 
 /************************************************/
@@ -377,120 +373,54 @@ public class Serveur
 	 */
 	public void raffraichirListeAttente(String joueur, int sens)
 	{
-		if (!estOrdinateur(joueur)){//COMPILATION
-			System.out.println("debut méthodeServeur raffraichirListeAttente: "+ joueur + sens);
-			ThreadJoueur res = null;
-			for(int i=0;i<joueurs.size() ;i++)
-			{
-				if(!(joueurs.get(i).getPseudo().equals(joueur) ))
-					{
-						res = joueurs.get(i);
-						res.raffraichirListeAttente(joueur,sens);
-					}
-
-			}
-		}
-	}
-
-	public boolean estOrdinateur(String pseudo)
-	{
-		String[] tmp = pseudo.split("-");
-		return tmp[0].equals("ORDINATEUR");
-	}
-
-
-
-	/************************************************/
-	/********** fonctions parties automatique  ******/
-	/************************************************/
-
-		/**
-		 *  Cette fonction est appelée par un ThreadJoueur.
-		 *  Elle demande à la base de données le nombre de questions disponibles
-		 */
-		public int recupereNbQuestion(String mode)
+		//System.out.println("debut méthodeServeur raffraichirListeAttente: "+ joueur + sens);
+		ThreadJoueur res = null;
+		for(int i=0;i<joueurs.size() ;i++)
 		{
-			return bdd.getNombreQuestion(mode);
+			if(!(joueurs.get(i).getPseudo().equals(joueur) ))
+			{
+				res = joueurs.get(i);
+				res.raffraichirListeAttente(joueur,sens);
+			}
 		}
+	}
 
-		/**
-		 *  Cette fonction est appelée par un ThreadJoueur.
-		 *  Elle permet de répondre  à une question posée.
-		 *  cest a dire elle répond à la question posée et renvoie la liste des personnages à baisser
-		 *  avec le nombre de case baissées
-		 *
-		 *  @param p partie concernée
-		 *  @param pseudo pseudo du joueur posant la question
-		 *  @param question numero de la question posée
-		 */
-		public String recupererReponseQuestion(Partie p ,String pseudo, int question)
+	/**
+	 *  Cette fonction est appelée par un ThreadJoueur.
+	 *  Elle permet de répondre  à une question posée.
+	 *  cest a dire elle répond à la question posée et renvoie la liste des personnages à baisser
+	 *
+	 *  @param p partie concernée
+	 *  @param pseudo pseudo du joueur posant la question
+	 *  @param question numero de la question posée
+	 *  @return chaine de caractères contenant les indices des cases à baisser
+	 */
+	public String recupererReponseQuestion(Partie p ,String pseudo, int question)
+	{
+		int[] tmp = p.getTabImages();// récupération des images de la partie
+		String img = "";
+		String m = p.getMode();
+		int id_image = p.getChoixAdversaire(pseudo);// récuperation de l'image de l'adversaire
+		int[] num_champs = bdd.getChampReponse(question,m);/*recupération du champs réponse correspondant à la question 										et de sa valeur pour une bonne réponse*/
+		int val_img = bdd.getBonneReponse(tmp[id_image],num_champs[0],m);/* récupération de la réponse sur l'image de 												l'adversaire */
+		boolean val_ref;
+
+		if(num_champs[1]==val_img)
+			val_ref = true;
+		else
+			val_ref = false;
+		
+		/*verifier avec les images de la partie les reponse au question*/
+		for( int i =0; i < tmp.length; i++)
 		{
-			int[] tmp = p.getTabImages();// récupération des images de la partie
-
-			int nb = 0;
-
-			String img = "";
-			String m = p.getMode();
-			System.out.println("/**************verification question***************/");
-			System.out.println("num question"+ question);
-			int id_image = p.getChoixAdversaire(pseudo);// récuperation de l'image de l'adversaire
-			System.out.println("image du joueur(indice)"+id_image);
-			int[] num_champs = bdd.getChampReponse(question,m);// recupération du champs réponse correspondant à la question
-			System.out.println("numero du champs"+num_champs[0]+" valeur du champs pour la question"+num_champs[1]);
-			int val_img = bdd.getBonneReponse(tmp[id_image],num_champs[0],m);// récupération de la réponse
-			System.out.println("numero image adversaire"+tmp[id_image]);
-			System.out.println("valeur image adversaire"+ val_img);
-			boolean val_ref;
-
-			if(num_champs[1]==val_img)
+			if( bdd.verifierImage( tmp[i], num_champs[0],num_champs[1],val_ref,m))
 			{
-				val_ref = true;
+				img = img + ":" + i ;
 			}
-			else
-			{
-				val_ref = false;
-			}
-			/*verifier avec les images de la partie les reponse au question*/
-			for( int i =0; i < tmp.length; i++)
-			{
-				if( bdd.verifierImage( tmp[i], num_champs[0],num_champs[1],val_ref,m))
-				{
-					System.out.println("image ok "+ i);
-					img = img + ":" + i ;
-				}
-
-			}
-
-			return img ;//le nb de case baissées et les indices des cases baissées
 		}
 
-		public String listeQuestion(String mode)
-		{
-			return bdd.listeQuestion(mode);
-		}
-
-
-/***********************ajout mode *******************************/
-
-	public void choisirModePartie(String mode, Partie p)
-	{
-		p.setMode(mode);
+		return img ;//les indices des cases baissées
 	}
-
-
-	public String getModePartie(Partie p)
-	{
-		return p.getMode();
-	}
-
-	public String listeFavoris(String pseudo)
-	{
-		return bdd.listeFavoris(pseudo);
-	}
-
-
-
-
 }
 
 

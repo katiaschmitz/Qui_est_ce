@@ -20,8 +20,6 @@ public class DataBase
 {
 	private Connection connexion;
 
-
-
 	/**
 	 * Initialise une instance de base de donnee
 	 * @param  connexion pour initialiser la connexion à la base de donnee
@@ -34,7 +32,7 @@ public class DataBase
     		String user = "E11216832";
     		String password = "0JYJQM054H1";*/
 
-			String url = "jdbc:mysql://mysql-thetourist.alwaysdata.net/thetourist_quiestce";
+		String url = "jdbc:mysql://mysql-thetourist.alwaysdata.net/thetourist_quiestce";
     		String user = "107510_3";
     		String password = "root";
 
@@ -83,7 +81,7 @@ public class DataBase
 			req.setString( 1, pseudo);
 			req.setString( 2, password);
 			ResultSet resultat = req.executeQuery();
-		    resultat.next();
+		    	resultat.next();
 			reponse=resultat.getInt("n");
 			if(reponse==1)
 			{
@@ -270,9 +268,6 @@ public class DataBase
 
 	}
 
-
-
-
 	/**
 	 * renvoie le tableau des scores represente par les pseudos des joueurs ainsi que leur nombre de victoires et leurs nombre de 		 * defaites
 	 * @param  pseudo la personne qui demande la liste, qu on ne renverra pas dans la liste
@@ -324,12 +319,9 @@ public class DataBase
 
 		return reponse;
 	}
-
-	
-
 	
 	/**
-	 * renvoie le score d'un joueur
+	 * renvoie le score d'un joueur ainsi que son classement
 	 * @param  pseudo la personne qui demande la liste, qu on ne renverra pas dans la liste
 	 * @return  une chaine de caracteres avec des ':' entre chaque personnes et des ' ' entre le nom,victoires et defaites de 		 * chaque personne
 	 */
@@ -464,9 +456,6 @@ public class DataBase
 	 */
 	public void setRang(String pseudo,int i)
 	{
-
-
-	
 		PreparedStatement req=null;
 		try
 		{
@@ -503,7 +492,6 @@ public class DataBase
 			}
 		}
 		catch(SQLException ex){System.out.println("erreur remplir Tableau");}
-
 	}
 
 
@@ -524,8 +512,6 @@ public class DataBase
 		}
 		catch(SQLException ex){System.out.println("erreur recupererNombreJoueurs");}
 		return nombre;
-
-
 	}
 	
 	/**
@@ -575,11 +561,16 @@ public class DataBase
 		}
 		catch(SQLException ex){System.out.println("erreur listeQuestion");}
 
-
 		return reponse;
 	}
 
-
+	
+	/**
+	 * renvoie le champ correspondant à la question dans la table image et la bonne réponse pour cette question
+	 * @param  mode de la question
+	 * @param id_question id de la question
+	 * @return un tableau contenant le champs et la valeur
+	 */
 	public int[] getChampReponse( int id_question, String mode )
 	{
 		PreparedStatement req=null;
@@ -602,7 +593,15 @@ public class DataBase
 
 	}
 
-
+	/**
+	 * renvoie si l'image remplit les critères de la question
+	 * @param  id_image id de l'image à vérifier
+	 * @param num_champs champs de réponse à vérifier
+	 * @param br bonne valeur pour la question posée
+	 * @param correct savoir si la valeur de l'image doit etre egale ou différente de la bonne valeur
+	 * @param m mode 
+	 * @return vrai s'il faut baisser l'image, false sinon
+	 */
 	public boolean verifierImage(int id_image, int num_champs,int br, boolean correct,String m)
 	{
 		PreparedStatement req=null;
@@ -618,11 +617,11 @@ public class DataBase
 				req.setInt(1,id_image);
 				ResultSet resultat = req.executeQuery();
 				resultat.next();
-	    		res=resultat.getInt("rep");
-	    		if(res!=br)
-	    			x=true;
-	    		else
-	    			x=false;
+	    			res=resultat.getInt("rep");
+	    			if(res!=br)
+	    				x=true;
+	    			else
+	    				x=false;
 
 			}
 			catch(SQLException ex){}
@@ -672,7 +671,14 @@ public class DataBase
 
 	}
 
-	public int getBonneReponse( int id_img,int champ,String m)
+	/**
+	 * recupere la valeur du champs d'une image
+	 * @param  m le mode donne
+	 * @param id_img id de l'image
+	 * @param champ champ de réponse
+	 * @return  valeur du champ pour l'image
+	 */
+	public int getBonneReponse(int id_img,int champ,String m)
 	{
 		System.out.println("id_image = "+id_img+" reponse"+champ);
 		String col = "reponse"+champ;
@@ -687,9 +693,7 @@ public class DataBase
 
 			ResultSet resultat = req.executeQuery();
 			resultat.next();
-			System.out.println("cloche");
-
-	    	nombre=resultat.getInt("m");
+	    		nombre=resultat.getInt("m");
 		}
 		catch(SQLException ex){System.out.println("erreur getBonneReponse");}
 		return nombre;

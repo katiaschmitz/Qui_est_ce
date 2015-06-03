@@ -50,7 +50,7 @@ public class AnalyseurServeur
 		this.actif=true;
 	}
 	/**
-	 *  renvoie si l analyseur est actif ou pas
+	 *  renvoie si l analyseur est actif
 	 *
 	 * @return true si on continue d attendre false sinon
 	 */
@@ -66,14 +66,12 @@ public class AnalyseurServeur
 
 	/**
 	 *  Attends qu'une requête soit fait par le joueur à travers la socket
-	 *  associé à ce dernier. Ensuite elle fait appel à des méthodes de ThreadJOueur.
-	 *  Cette méthode peut être utilisée lors du lancement du thread associé.
+	 *  associée à ce dernier. Ensuite elle fait appel à des méthodes de ThreadJOueur.
 	 *
 	 */
 	public void principale()
 	{
-		//COMPILATION
-		System.out.println(" debut méthodeAnalyseurServeur principale ");
+		//System.out.println(" debut méthodeAnalyseurServeur principale ");
 
 		String[] infos;
 		String demande;
@@ -85,17 +83,12 @@ public class AnalyseurServeur
 			System.out.println("attente message client");
 			/*recuperation du message*/
 			recu = th.getInput().readLine();// entrée de la socket
-			System.out.println("reception "+recu);
+			/* affichage */System.out.println("reception "+recu);/* affichage */
+
 		  if(recu != null)
 		  {
-			/*rajouter cas ou on recoit null attention pas de split*/
 			infos=recu.split(":");// decoupage de la chaine de caractère
 			demande=infos[0];// numero de la demande
-
-			/*compilation*/
-			for(int i=0;i<infos.length;i++)
-			System.out.println(infos[i]);
-
 
 			/*traitement des différentes demandes*/
 			if(demande.equals("1"))//demande inscription
@@ -125,9 +118,9 @@ public class AnalyseurServeur
 				th.choisirPerso(infos[1]);
 
 			}
-			else if(demande.equals("9"))// pour mettre a jour le nombre de cases baissées
+			else if(demande.equals("9"))// envoyer les cases baissées à l'adversaire
 			{
-				th.nbCaseBaissee(recu);
+				th.envoiCaseBaissee(recu);
 			}
 			else if(demande.equals("10"))// proposer une reponse
 			{
@@ -161,24 +154,24 @@ public class AnalyseurServeur
 			{
 				th.envoiQuestion();
 			}
-			else if(demande.equals("34"))
+			else if(demande.equals("34"))// choix du mode
 			{
 				th.choisirMode(infos[1]);
 			}
-			else if(demande.equals("36"))
+			else if(demande.equals("36"))// envoi liste de favoris
 			{
 				th.listeFavoris();
 			}
 
-			else if(demande.equals("19"))
+			else if(demande.equals("19"))// envoyer les images du mode
 			{
 				th.envoyerImageMode(infos[1]);
 			}
-			else if(demande.equals("40"))
+			else if(demande.equals("40"))// quitter la page de partie
 			{
 				th.quitterPartie();
 			}
-			else if(demande.equals("50"))
+			else if(demande.equals("50"))// afficher scores joueur
 			{
 				th.afficherScoreJoueur();
 			}
@@ -189,16 +182,12 @@ public class AnalyseurServeur
 		  }
 		  else
 		  {
-			 /* message pour compilation*/
-			System.out.println("fin attente message croix rouge");
 			th.deconnexion();
 			this.actif = false;
 		  }
 
-		  }
-
-
-			catch (IOException e){ }
-		}
+		}catch (IOException e){ }
+		
+	}
 }
 

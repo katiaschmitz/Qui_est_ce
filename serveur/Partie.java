@@ -5,26 +5,19 @@
  *
  *  Une "Partie" représente une partie entre deux utilisateurs.
  *
- *  Elle est caractérisée  par le pseudo des joueurs, leur choix d image, le nombre de case qu'ilq ont baisséeune socket,socket principale du jeu qui attend la connexion des utilisateurs;
- *  sa base de données contenant les différents membres du logiciel et leur mot de passe,les scores; les différents ThreadJOueur
- *  correspondant aux joueurs, les différentes parties
+ *  Elle est caractérisée  par le pseudo des joueurs, leur choix d'image, les images de la partie et le mode de la partie
+ * 
  *
  */
 
 import java.util.*;
-
-
-
-
 public class Partie
 {
 	private String joueur1;
 	private String joueur2;
-	private int choixJoueur1;/*entre 1 et 20*/
+	private int choixJoueur1;
 	private int choixJoueur2;
-	//private int nbCaseBaissee1;
-	//private int nbCaseBaissee2;
-	private int images[];/* supplementaire*/
+	private int images[];
 	private String mode;
 
 /*******************************************************/
@@ -32,53 +25,43 @@ public class Partie
 /*******************************************************/
 
 	/**
-	 *  Initialise une Partie avec les pseudos des deux joueurs et met le nombre de cases baissées à 0
+	 *  Initialise une Partie avec les pseudos des deux joueurs
 	 *
 	 * @param pseudo1 pseudo de l'utilisateur qui fait la demande de partie
 	 * @param pseudo2 pseudo de l'autre utilisateur
 	 * @return Partie
 	 */
 	public Partie(String pseudo1,String pseudo2)
-	{
-		//COMPILATION
-		System.out.println("debut méthodePartie constructeur: "+pseudo1+" "+pseudo2);
+	{	
+		//System.out.println("debut méthodePartie constructeur: "+pseudo1+" "+pseudo2);
 		images=new int[24];
 		joueur1=pseudo1;
 		joueur2=pseudo2;
-		//nbCaseBaissee1=0;
-		//nbCaseBaissee2=0;
 		mode = "";
-
+		for(int i=0; i<24;++i)
+		images[i]= i+1;
 	}
 
-
-
+	/**
+	 *  Initialise le mode de la partie
+	 *
+	 * @param mode mode choisi par le joueur
+	 */
 	public void setMode(String mode)
 	{
 		this.mode = mode;
 		System.out.println("Mode : "+mode);
 	}
 
+	/**
+	 *  Renvoie le mode de la partie
+	 * 
+	 * @return nom du mode 
+	 */
 	public String getMode()
 	{
 		return mode;	
 	}
-
-	/**
-	 *  Renvoie le nombre de cases baissées par le joueur dont le pseudo est donné en argument
-	 *
-	 * @param pseudo pseudo du joueur
-	 * @return nombre de cases baissées du joueur
-	 */
-	/*public int getNbCaseBaissee(String pseudo)
-	{
-		//COMPILATION
-		System.out.println("debut méthodePartie getNbCaseBaissee: "+pseudo);
-		if(pseudo.equals(joueur1))
-			return nbCaseBaissee1;
-		else
-			return nbCaseBaissee2;
-	}*/
 
 	/**
 	 *  Initialise le choix de l'image du joueur
@@ -88,8 +71,7 @@ public class Partie
 	 */
 	public void setChoixJoueur(String pseudo,int choix)
 	{
-		//COMPILATION
-		System.out.println("debut méthodePartie setChoixJoueur: "+pseudo+" "+ choix);
+		//System.out.println("debut méthodePartie setChoixJoueur: "+pseudo+" "+ choix);
 		if(pseudo.equals(joueur1))
 			choixJoueur1=choix;
 		else
@@ -97,15 +79,13 @@ public class Partie
 	}
 
 	/**
-	 *  Renvoie le pseudo de l'adversaire du joueur donner en argument
+	 *  Renvoie le pseudo de l'adversaire du joueur donné en argument
 	 *
 	 * @param pseudo pseudo du joueur
 	 * @return le pseudo de l adversaire
 	 */
 	public String getAdversaire(String pseudo)
 	{
-		//COMPILATION
-		System.out.println("debut méthodePartie getAdversaire: "+pseudo);
 		if(pseudo.equals(joueur1))
 			return joueur2;
 		else
@@ -119,8 +99,6 @@ public class Partie
 	 */
 	public String getJoueur1()
 	{
-		//COMPILATION
-		System.out.println("debut méthodePartie getJoueur1: ");
 		return joueur1;
 	}
 
@@ -131,8 +109,6 @@ public class Partie
 	 */
 	public String getJoueur2()
 	{
-		//COMPILATION
-		System.out.println("debut méthodePartie getJoueur2: ");
 		return joueur2;
 	}
 
@@ -144,20 +120,28 @@ public class Partie
 	 */
 	public int getImage(int i)
 	{
-		//COMPILATION
-		System.out.println("debut méthodePartie getImage d indice: "+i);
+		//System.out.println("debut méthodePartie getImage d indice: "+i);
 		return images[i];
 	}
 
+	/**
+	 *  Renvoie le choix de l'adversaire du joueur donné en argument
+	 *
+	 * @return indice de l'image choisie par l'adversaire
+	 */
 	public int getChoixAdversaire(String pseudo)
 	{
-
 		if(pseudo.equals(joueur1))
 			 return choixJoueur2;
 		else
 			return choixJoueur1;
 	}
 
+	/**
+	 *  Renvoie le tableau des images
+	 *
+	 * @return tableau des images
+	 */
 	public int[] getTabImages()
 	{
 		return images;
@@ -169,7 +153,7 @@ public class Partie
 
 	/**
 	 *  Cette fonction est appelée par un Serveur.
-	 *  vérifie le choix du joueur
+	 *  Elle vérifie le choix du joueur
 	 *
 	 * @param pseudo pseudo du joueur
 	 * @param choix numero de l image proposée
@@ -177,58 +161,15 @@ public class Partie
 	 */
 	public boolean verifierChoix(String pseudo,int choix)
 	{
-		//COMPILATION
-		System.out.println("debut méthodePartie verifierChoix: "+pseudo +" "+ choix);
+		//System.out.println("debut méthodePartie verifierChoix: "+pseudo +" "+ choix);
 		boolean reponse=false;
 		if(pseudo.equals(joueur1))
 			reponse = (choix == choixJoueur2);
 		else
-			reponse=(choix==choixJoueur1);
+			reponse = (choix==choixJoueur1);
 		return reponse;
 	}
 
-	/**
-	 *  Cette fonction est appelée par un Serveur.
-	 *  augmente le nombre de case baissée du joueur
-	 *
-	 * @param pseudo pseudo du joueur
-	 * @param nb nombre a ajouter
-	 */
-	/*public void ajouterCase(String pseudo,int nb)
-	{
-		//COMPILATION
-		System.out.println("debut méthodePartie ajouterCase: "+pseudo+" "+ nb);
-		if(pseudo.equals(joueur1))
-			nbCaseBaissee1= nbCaseBaissee1+nb;
-		else
-			nbCaseBaissee2 = nbCaseBaissee2+nb;
-	}*/
-
-	/**
-	 *  Cette fonction est appelée par un Serveur.
-	 *  Choisit au hasard 24 numéro d'image compris entre 0 et 19
-	 */
-	public void initialiseImagePartie(int nb)
-	{
-		//COMPILATION
-		System.out.println("nb: "+nb);
-		System.out.println("debut méthodePartie initialiseImagePartie: ");
-		Random rand;
-		ArrayList<Integer> tab = new ArrayList<Integer>();
-		for (int i=0; i<24;++i)//attention
-		tab.add(i+1);
-
-                for(int i=0; i<24;++i)
-		{
-			images[i]= i+1;
-		}
-		/*for(int i=0; i<24;++i)
-		{
-			rand = new Random();
-			images[i]=tab.get(rand.nextInt(nb-i));
-			tab.remove((Integer)images[i]);
-		}*/
-	}
 }
 
 
