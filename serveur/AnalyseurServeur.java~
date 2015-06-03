@@ -167,7 +167,7 @@ public class AnalyseurServeur
 			}
 			else if(demande.equals("36"))
 			{
-				th.listeFavoris(infos[1]);
+				th.listeFavoris();
 			}
 
 			else if(demande.equals("19"))
@@ -177,6 +177,10 @@ public class AnalyseurServeur
 			else if(demande.equals("40"))
 			{
 				th.quitterPartie();
+			}
+			else if(demande.equals("50"))
+			{
+				th.();
 			}
 			/*remise à zero des informations*/
 			recu="";

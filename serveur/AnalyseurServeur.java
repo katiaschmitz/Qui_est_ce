@@ -178,6 +178,10 @@ public class AnalyseurServeur
 			{
 				th.quitterPartie();
 			}
+			else if(demande.equals("50"))
+			{
+				th.afficherScoreJoueur();
+			}
 			/*remise à zero des informations*/
 			recu="";
 			for(int i=0;i<infos.length;i++)

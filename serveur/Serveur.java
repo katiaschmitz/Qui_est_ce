@@ -164,6 +164,16 @@ public class Serveur
 		return bdd.afficherScore(joueur);
 	}
 
+	public String recupererScoreJoueur(String joueur)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeServeur recupererScorejoueur: "+joueur);
+		return bdd.afficherScoreJoueur(joueur);
+
+	}
+
+
+
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
 	 *  Elle demande a la base de données la liste des joueurs en attente pour l utilisateur dont le pseudo

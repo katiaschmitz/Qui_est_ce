@@ -326,6 +326,13 @@ public class DataBase
 	}
 
 	
+
+	
+	/**
+	 * renvoie le score d'un joueur ainsi que son classement
+	 * @param  pseudo la personne qui demande la liste, qu on ne renverra pas dans la liste
+	 * @return  une chaine de caracteres avec des ':' entre chaque personnes et des ' ' entre le nom,victoires et defaites de 		 * chaque personne
+	 */
 	public String afficherScoreJoueur(String pseudo)
 	{
 

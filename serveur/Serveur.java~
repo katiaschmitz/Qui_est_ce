@@ -107,7 +107,6 @@ public class Serveur
 		System.out.println("debut méthodeServeur main ");
 		System.out.println("***************** ");
 		Serveur x = new Serveur();
-		System.out.println(x.bdd.afficherScore("bouh"));
 		//COMPILATION
 		System.out.println("fin méthodeServeur main ");
 	}
@@ -164,6 +163,16 @@ public class Serveur
 		System.out.println("debut méthodeServeur recupererScores: "+joueur);
 		return bdd.afficherScore(joueur);
 	}
+
+	public String recupererScoreJoueur(String joueur)
+	{
+		//COMPILATION
+		System.out.println("debut méthodeServeur recupererScorejoueur: "+joueur);
+		return bdd.afficherScore(joueur);
+
+	}
+
+
 
 	/**
 	 *  Cette fonction est appelée par un ThreadJoueur.
