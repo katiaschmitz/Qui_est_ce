@@ -165,9 +165,9 @@ public class AnalyseurServeur
 			{
 				th.choisirMode(infos[1]);
 			}
-			else if(demande.equals("35"))
+			else if(demande.equals("36"))
 			{
-				/*envoyer listes mode*/
+				th.listeFavoris();
 			}
 
 			else if(demande.equals("19"))

@@ -302,13 +302,15 @@ public class DataBase
 			req=connexion.prepareStatement( "select rang from qui_est_ce where pseudo=?");	
 			req.setString( 1, pseudo );	
 			resultat = req.executeQuery();
+			resultat.next();
 			nombre = resultat.getInt("rang");	
-			if(nombre>=0)
+			if(nombre>=10)
 			{
 				req=connexion.prepareStatement( "select pseudo,gagne,perdu from qui_est_ce where pseudo=?");
-				ResultSet resultat = req.executeQuery();
-				resultat.next()
 				req.setString( 1, pseudo );
+				resultat = req.executeQuery();
+				resultat.next();
+
 				g=resultat.getInt("gagne");
 				p=resultat.getInt("perdu");
 				ps = resultat.getString("pseudo");
@@ -558,13 +560,11 @@ public class DataBase
 	    		nombre[0]=resultat.getInt("num_champ");
 	    		nombre[1] = resultat.getInt("reponse");
 		}
-<<<<<<< HEAD
+
 		catch(SQLException ex){System.out.println("erreur getChampReponse");}
 		System.out.println("champ" + nombre[0] + " valeur"+ nombre[1]);
-=======
-		catch(SQLException ex){}
-		System.out.println("reponse" + nombre[0] + " valeur"+ nombre[1]);
->>>>>>> 0fce81c6b09bedc287fb26d9ec1880d54de135b2
+
+		
 		return nombre;
 
 	}
@@ -799,7 +799,7 @@ public class DataBase
 			ps = resultat.getString("fav");
 			reponse = reponse + ":" +ps;
 		}
-		catch(SQLException ex){}
+		catch(SQLException ex){System.out.println("erreur supprimerFavoris 2eme requete");}
 
 
 		return reponse;	

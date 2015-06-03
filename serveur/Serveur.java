@@ -51,14 +51,14 @@ public class Serveur
 
 		bdd.deconncterTous();
 
-			while (true) // attente en boucle de connexion (bloquant sur ss.accept)
+			/*while (true) // attente en boucle de connexion (bloquant sur ss.accept)
 			{
 				//COMPILATION
 				System.out.println("constructeur serveur : attente client sur "+InetAddress.getLocalHost());
 			        joueurs.add(new ThreadJoueur(socket_serveur.accept(),this));
 				//COMPILATION
 				System.out.println("constructeur serveur : client connecté ");
-			}
+			}*/
 		}catch (Exception e) {		System.out.println("erreur constructeur serveur ");
  }
 	}
@@ -107,7 +107,7 @@ public class Serveur
 		System.out.println("debut méthodeServeur main ");
 		System.out.println("***************** ");
 		Serveur x = new Serveur();
-
+		System.out.println(x.bdd.afficherScore("bouh"));
 		//COMPILATION
 		System.out.println("fin méthodeServeur main ");
 	}

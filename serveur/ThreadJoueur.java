@@ -568,17 +568,15 @@ public class ThreadJoueur implements Runnable
 		out.flush();
                 } 
 		catch(IOException e){System.out.println("erreur envoi image");}
+	}
 	
 
-	public void listeFavoris(String pseudo)
+	public void listeFavoris()
 	{
 		String reponse="";
-		reponse = serveur.listeFavoris(pseudo);
+		reponse = serveur.listeFavoris(this.pseudo);
 		envoiMessageJoueur("36"+reponse);
 	}
-
-
-}
 
 		public void quitterPartie()
 		{
