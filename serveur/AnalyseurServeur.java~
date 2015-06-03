@@ -169,7 +169,7 @@ public class AnalyseurServeur
 			{
 				/*envoyer listes mode*/
 			}
-<<<<<<< HEAD
+
 			else if(demande.equals("19"))
 			{
 				th.envoyerImageMode(infos[1]);
@@ -177,11 +177,6 @@ public class AnalyseurServeur
 			else if(demande.equals("40"))
 			{
 				th.quitterPartie();
-=======
-			else if(demande.equals("36"))
-			{
-				th.listeFavoris(infos[1]); /* demande liste favoris d'un joueur*/
->>>>>>> 665f5185e5cd269ed13555fb69a20b6c79d26146
 			}
 			/*remise à zero des informations*/
 			recu="";
